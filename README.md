@@ -23,6 +23,10 @@ npm run build
 
 ## Demo
 
+Shareable demo:
+
+- [Live GitHub Pages demo](https://neighbor131.github.io/monopulse-sample/)
+
 Best demo entry:
 
 - [Browser presentation demo](./DEMO_SCRIPT_PRESENTATION.html)

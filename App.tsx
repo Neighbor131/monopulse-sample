@@ -10,7 +10,7 @@ export default function App() {
     <CampaignProvider>
       <ReviewsProvider>
         <ProgramProvider>
-          <BrowserRouter>
+          <BrowserRouter basename={import.meta.env.BASE_URL}>
             <AppRoutes />
           </BrowserRouter>
         </ProgramProvider>
