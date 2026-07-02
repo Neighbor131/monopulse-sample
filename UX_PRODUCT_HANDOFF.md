@@ -184,8 +184,6 @@ Backend and full-stack teams will likely care most about:
 
 ## Companion Docs
 
-- [Stakeholder demo script](./STAKEHOLDER_DEMO_SCRIPT.md)
-- [Visual demo script with screenshots](./DEMO_SCRIPT_WITH_SCREENSHOTS.md)
 - [Browser presentation demo](./DEMO_SCRIPT_PRESENTATION.html)
 - [Backend contract appendix](./BACKEND_CONTRACT_APPENDIX.md)
 - [UX QA checklist](./QA_CHECKLIST.md)

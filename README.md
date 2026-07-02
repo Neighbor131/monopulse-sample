@@ -27,11 +27,6 @@ Best demo entry:
 
 - [Browser presentation demo](./DEMO_SCRIPT_PRESENTATION.html)
 
-Supporting scripts:
-
-- [Screenshot-backed markdown demo](./DEMO_SCRIPT_WITH_SCREENSHOTS.md)
-- [Stakeholder speaker script](./STAKEHOLDER_DEMO_SCRIPT.md)
-
 Screenshots used by the demo live in:
 
 - [docs/demo-screenshots](./docs/demo-screenshots)
@@ -51,7 +46,6 @@ Read in this order:
 2. [Browser presentation demo](./DEMO_SCRIPT_PRESENTATION.html)
 3. [Backend contract appendix](./BACKEND_CONTRACT_APPENDIX.md)
 4. [UX QA checklist](./QA_CHECKLIST.md)
-5. [Git handoff checklist](./GIT_HANDOFF_CHECKLIST.md)
 
 ## Key Routes
 
@@ -84,6 +78,8 @@ Read in this order:
 - Production build passes.
 - Typecheck may expose generated-code cleanup items depending on local TypeScript strictness.
 
-## Git Notes
+## What To Review
 
-Commit the source, docs, scripts, and demo screenshots. Do not commit `node_modules`, `dist`, or TypeScript build cache files.
+- Product/design: start with the visual demo and UX handoff.
+- Backend/full-stack: review the backend appendix after the demo.
+- QA/stakeholders: use the QA checklist before presenting.
