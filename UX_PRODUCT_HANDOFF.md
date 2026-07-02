@@ -4,7 +4,7 @@
 
 This prototype explores the operator backoffice for MonoPulse gamification: campaign creation, loyalty/status management, reward fulfillment, player inspection, segment building, monitoring, integrations, org/brand controls, approvals, and operational safety.
 
-The design target is a dense, operational backoffice for CRM/Retention Managers and Casino Managers, with visible touchpoints for Risk/Compliance and Technical Admin users.
+The design target is a dense, operational backoffice for CRM/Retention Managers and Casino Managers, with visible touchpoints for Risk/Compliance and Technical Admin users. The latest addition is a campaign operations layer for calendar visibility, Jira-like task ownership, and automatic end-of-campaign reporting.
 
 ## Primary Users
 
@@ -19,18 +19,19 @@ The design target is a dense, operational backoffice for CRM/Retention Managers 
 1. Start at `/login`
 2. Continue to `/2fa`
 3. Enter `/dashboard`
-4. Open Campaigns from `/`
-5. Inspect `/campaigns/c-1042`
-6. Create a campaign through `/create` and `/builder/setup`
-7. Review approval flow at `/approvals` and `/approvals/:id`
-8. Inspect rewards at `/rewards` and `/rewards/rw-fs-acr-20`
-9. Run action modals: Test grant, Run gates, Sync GUIDs
-10. Inspect player profile at `/players/PLR-88213`
-11. Open monitoring at `/monitoring`
-12. Review integrations at `/integrations`
-13. Review org roles and permissions at `/org`
-14. Open global search with `Cmd/Ctrl + K`
-15. Open notifications and account/org menus from the top bar
+4. Open Campaign Ops at `/ops`
+5. Open Campaigns from `/`
+6. Inspect `/campaigns/c-1042`
+7. Create a campaign through `/create` and `/builder/setup`
+8. Review approval flow at `/approvals` and `/approvals/:id`
+9. Inspect rewards at `/rewards` and `/rewards/rw-fs-acr-20`
+10. Run action modals: Test grant, Run gates, Sync GUIDs
+11. Inspect player profile at `/players/PLR-88213`
+12. Open monitoring at `/monitoring`
+13. Review integrations at `/integrations`
+14. Review org roles and permissions at `/org`
+15. Open global search with `Cmd/Ctrl + K`
+16. Open notifications and account/org menus from the top bar
 
 ## Route Map
 
@@ -43,6 +44,7 @@ The design target is a dense, operational backoffice for CRM/Retention Managers 
 | `/2fa` | Two-factor checkpoint |
 | `/select-org` | Organization and brand-scope selection |
 | `/dashboard` | Operational overview and action queue |
+| `/ops` | Campaign calendar, ops tasks, report templates, generated reports |
 | `/` | Campaign list |
 | `/campaigns/:id` | Campaign detail and operational state |
 | `/create` | Campaign type picker |
@@ -69,6 +71,12 @@ The design target is a dense, operational backoffice for CRM/Retention Managers 
 The campaign builder supports setup, audience, rewards, budget, and review. The UX should prove that every campaign type can share a common wizard while still surfacing mechanic-specific configuration through contextual rails and module fields.
 
 Important product question: which campaign mechanics truly require separate builder steps versus conditional fields inside shared steps?
+
+### Campaign Operations
+
+Campaign Ops adds a planning and execution layer above campaigns: calendar visibility, task ownership, due dates, blockers, campaign readiness, report templates and generated campaign reports.
+
+Important product question: should MonoPulse own campaign task management fully, or integrate with external Jira/Linear while showing only campaign-critical tasks inside the backoffice?
 
 ### Approval Review
 
@@ -177,9 +185,9 @@ Backend and full-stack teams will likely care most about:
 ## Suggested Next UX Work
 
 1. Add role-based disabled states and permission tooltips.
-2. Add empty/error/loading states for each major section.
-3. Add a backend contract appendix with payload examples.
-4. Add a visual demo checklist for stakeholder walkthroughs.
+2. Deepen Campaign Ops with comments, assignee edit, drag-reschedule and task detail drawer.
+3. Add empty/error/loading states for each major section.
+4. Add backend payload examples for ops tasks and generated reports.
 5. QA narrow viewport behavior for tables, rails and modals.
 
 ## Companion Docs

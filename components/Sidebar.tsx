@@ -1,6 +1,7 @@
 import {
   Activity,
   Buildings,
+  Calendar,
   Category,
   Code,
   Diamonds,
@@ -37,6 +38,7 @@ const SECTIONS: NavSection[] = [
     items: [
       { label: 'Dashboard', icon: Category, path: '/dashboard', match: ['/dashboard'] },
       { label: 'Campaigns', icon: StatusUp, path: '/', match: ['/', '/create', '/builder'], badge: '4' },
+      { label: 'Campaign Ops', icon: Calendar, path: '/ops', match: ['/ops'], badge: '5' },
       { label: 'Loyalty', icon: Diamonds, path: '/loyalty', match: ['/loyalty'] },
       { label: 'Rewards', icon: Gift, path: '/rewards', match: ['/rewards'] },
     ],

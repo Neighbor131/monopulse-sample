@@ -32,6 +32,14 @@ Use this checklist before showing the prototype.
 - Campaign detail content does not overlap at desktop width.
 - Builder steps remain navigable.
 
+## Campaign Ops
+
+- Campaign Ops is reachable from sidebar and `/ops`.
+- Calendar tab shows campaign windows, status and risk markers.
+- Ops task tab shows owner, team, due date, priority, status and blocker copy.
+- Reports tab shows template sections and generated report cards.
+- Deep route `/ops` works on the hosted Netlify demo.
+
 ## Approvals
 
 - Approval inbox filters work.

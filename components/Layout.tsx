@@ -8,6 +8,7 @@ import { PLAYERS } from '../data/players';
 import { REWARDS } from '../data/rewards';
 import { PROVIDERS } from '../data/integrations';
 import { actionQueue } from '../data/dashboard';
+import { OPS_TASKS } from '../data/campaignOps';
 
 type ThemeMode = 'dark' | 'light';
 type OpenPanel = 'notifications' | 'account' | 'org' | null;
@@ -104,6 +105,14 @@ export default function Layout({ children }: { children: ReactNode }) {
       detail: `${item.kind} · ${item.detail}`,
       href: item.href,
       tone: item.severity === 'critical' ? 'danger' as const : 'warning' as const,
+    })),
+    ...OPS_TASKS.map((task) => ({
+      id: task.id,
+      type: 'Ops task',
+      title: task.title,
+      detail: `${task.team} · ${task.owner} · ${task.due}`,
+      href: '/ops',
+      tone: task.status === 'blocked' ? 'danger' as const : task.priority === 'critical' || task.priority === 'high' ? 'warning' as const : 'default' as const,
     })),
     ...PROVIDERS.map((provider) => ({
       id: provider.id,

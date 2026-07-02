@@ -58,6 +58,7 @@ Read in this order:
 | `/login` | Sign in |
 | `/2fa` | Two-factor checkpoint |
 | `/dashboard` | Operational dashboard |
+| `/ops` | Campaign calendar, tasks and reports |
 | `/` | Campaign portfolio |
 | `/campaigns/c-1042` | Campaign detail |
 | `/create` | Campaign type picker |
@@ -84,6 +85,6 @@ Read in this order:
 
 ## What To Review
 
-- Product/design: start with the visual demo and UX handoff.
+- Product/design: start with the live demo, Campaign Ops, and UX handoff.
 - Backend/full-stack: review the backend appendix after the demo.
 - QA/stakeholders: use the QA checklist before presenting.

@@ -20,6 +20,7 @@ import Monitoring from './screens/Monitoring';
 import CampaignDetail from './screens/CampaignDetail';
 import Settings from './screens/Settings';
 import AuthFlow from './screens/AuthFlow';
+import CampaignOps from './screens/CampaignOps';
 
 export default function AppRoutes() {
   return (
@@ -31,6 +32,7 @@ export default function AppRoutes() {
       <Route path="/2fa" element={<AuthFlow mode="2fa" />} />
       <Route path="/select-org" element={<AuthFlow mode="select-org" />} />
       <Route path="/" element={<Layout><CampaignsList /></Layout>} />
+      <Route path="/ops" element={<Layout><CampaignOps /></Layout>} />
       <Route path="/campaigns/:id" element={<Layout><CampaignDetail /></Layout>} />
       <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} />
       <Route path="/create" element={<Layout><CampaignTypePicker /></Layout>} />

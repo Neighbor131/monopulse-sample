@@ -20,6 +20,7 @@ const shots = [
   { name: '13-integrations', path: '/integrations', title: 'Integrations and provider health' },
   { name: '14-org', path: '/org', title: 'Org, brands and permissions' },
   { name: '15-settings', path: '/settings', title: 'Settings and governance' },
+  { name: '18-campaign-ops', path: '/ops', title: 'Campaign Ops calendar, tasks and reports' },
 ];
 
 await mkdir(outDir, { recursive: true });
