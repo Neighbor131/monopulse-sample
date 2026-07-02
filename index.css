@@ -1,0 +1,169 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+
+  --bg-base: #0A0D13;
+  --surface-1: #10141C;
+  --surface-2: #161B25;
+  --surface-3: #1D2430;
+  --surface-hover: #202836;
+  --border-subtle: #232B38;
+  --border-strong: #303A4A;
+
+  --fg-primary: #E7ECF3;
+  --fg-secondary: #9AA6B8;
+  --fg-muted: #667085;
+
+  --accent: #35D6C3;
+  --accent-hover: #48E4D1;
+  --accent-fg: #04211E;
+  --accent-bg: rgba(53, 214, 195, 0.10);
+  --accent-border: rgba(53, 214, 195, 0.32);
+
+  --success: #3FBF7F;
+  --warning: #E7A83C;
+  --danger: #F0576B;
+  --danger-bg: rgba(240, 87, 107, 0.10);
+  --warning-bg: rgba(231, 168, 60, 0.10);
+
+  --status-draft: #8B95A7;
+  --status-draft-bg: rgba(139, 149, 167, 0.12);
+  --status-pending: #E7A83C;
+  --status-pending-bg: rgba(231, 168, 60, 0.13);
+  --status-scheduled: #5B8DEF;
+  --status-scheduled-bg: rgba(91, 141, 239, 0.13);
+  --status-live: #3FBF7F;
+  --status-live-bg: rgba(63, 191, 127, 0.13);
+  --status-paused: #E7843C;
+  --status-paused-bg: rgba(231, 132, 60, 0.13);
+  --status-completed: #6B7688;
+  --status-completed-bg: rgba(107, 118, 136, 0.12);
+  --status-failed: #F0576B;
+  --status-failed-bg: rgba(240, 87, 107, 0.13);
+
+  --tier-bronze: #C08457;
+  --tier-silver: #9BA6B4;
+  --tier-gold: #E7A83C;
+  --tier-platinum: #6BC5D6;
+  --tier-diamond: #35D6C3;
+
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.55);
+  --overlay-scrim: rgba(4, 7, 12, 0.62);
+}
+
+[data-theme='light'] {
+  color-scheme: light;
+
+  --bg-base: #F5F7FA;
+  --surface-1: #FFFFFF;
+  --surface-2: #F7F9FC;
+  --surface-3: #EEF2F7;
+  --surface-hover: #E8EEF6;
+  --border-subtle: #D9E1EC;
+  --border-strong: #C5CFDD;
+
+  --fg-primary: #111827;
+  --fg-secondary: #4B5565;
+  --fg-muted: #7C8798;
+
+  --accent: #0EBAA8;
+  --accent-hover: #0AA494;
+  --accent-fg: #FFFFFF;
+  --accent-bg: rgba(14, 186, 168, 0.10);
+  --accent-border: rgba(14, 186, 168, 0.28);
+
+  --success: #168A55;
+  --warning: #B7791F;
+  --danger: #D1435B;
+  --danger-bg: rgba(209, 67, 91, 0.10);
+  --warning-bg: rgba(183, 121, 31, 0.12);
+
+  --status-draft: #667085;
+  --status-draft-bg: rgba(102, 112, 133, 0.12);
+  --status-pending: #B7791F;
+  --status-pending-bg: rgba(183, 121, 31, 0.13);
+  --status-scheduled: #356AC3;
+  --status-scheduled-bg: rgba(53, 106, 195, 0.12);
+  --status-live: #168A55;
+  --status-live-bg: rgba(22, 138, 85, 0.12);
+  --status-paused: #C86927;
+  --status-paused-bg: rgba(200, 105, 39, 0.12);
+  --status-completed: #5E6B7D;
+  --status-completed-bg: rgba(94, 107, 125, 0.12);
+  --status-failed: #D1435B;
+  --status-failed-bg: rgba(209, 67, 91, 0.12);
+
+  --tier-bronze: #A3663E;
+  --tier-silver: #788391;
+  --tier-gold: #B7791F;
+  --tier-platinum: #2F8FA3;
+  --tier-diamond: #0EBAA8;
+
+  --shadow-md: 0 4px 16px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 18px 44px rgba(15, 23, 42, 0.16);
+  --overlay-scrim: rgba(15, 23, 42, 0.36);
+}
+
+* {
+  border-color: var(--border-subtle);
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg-base);
+  color: var(--fg-primary);
+  font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  transition: background-color 160ms ease, color 160ms ease;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 8px;
+  border: 2px solid var(--bg-base);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--fg-muted);
+}
+
+input::placeholder {
+  color: var(--fg-muted);
+}
+
+@layer components {
+  .field-input {
+    @apply w-full rounded-md border px-3 py-2 text-[12.5px] font-medium outline-none transition-colors;
+    border-color: var(--border-strong);
+    background: var(--surface-1);
+    color: var(--fg-primary);
+  }
+
+  .field-input:focus {
+    border-color: var(--accent-border);
+    box-shadow: 0 0 0 2px var(--accent-bg);
+  }
+}

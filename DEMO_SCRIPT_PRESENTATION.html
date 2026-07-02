@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MonoPulse Visual Demo Script</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #080d14;
+        --line: #213044;
+        --text: #eef4ff;
+        --muted: #9aa8bc;
+        --accent: #35dbc8;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        line-height: 1.55;
+      }
+
+      main {
+        width: min(1120px, calc(100vw - 40px));
+        margin: 0 auto;
+        padding: 48px 0 80px;
+      }
+
+      header {
+        margin-bottom: 32px;
+      }
+
+      h1 {
+        margin: 0 0 12px;
+        font-size: clamp(34px, 5vw, 58px);
+        line-height: 1;
+        letter-spacing: 0;
+      }
+
+      h2 {
+        margin: 0 0 20px;
+        font-size: 28px;
+        letter-spacing: 0;
+      }
+
+      p {
+        margin: 0 0 14px;
+      }
+
+      .intro {
+        max-width: 760px;
+        color: var(--muted);
+        font-size: 17px;
+      }
+
+      .screen {
+        margin-top: 52px;
+        padding-top: 34px;
+        border-top: 1px solid var(--line);
+      }
+
+      .shot {
+        display: block;
+        width: 100%;
+        height: auto;
+        margin: 0 0 22px;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 24px;
+      }
+
+      .label {
+        margin: 0 0 8px;
+        color: var(--accent);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      ul {
+        margin: 0;
+        padding-left: 20px;
+        color: var(--muted);
+      }
+
+      li + li {
+        margin-top: 8px;
+      }
+
+      .commentary {
+        margin: 0;
+        color: var(--text);
+      }
+
+      @media (max-width: 760px) {
+        main {
+          width: min(100vw - 24px, 1120px);
+          padding-top: 28px;
+        }
+
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>MonoPulse Visual Demo Script</h1>
+        <p class="intro">A screenshot-backed walkthrough for product owner, design, backend and stakeholder review. Each screen uses a local capture from the MonoPulse prototype.</p>
+      </header>
+
+      <section class="screen">
+        <h2>1. Access And Role Scope</h2>
+        <img class="shot" src="docs/demo-screenshots/01-login.png" alt="Access and role-scoped entry">
+        <div class="grid">
+          <div>
+            <p class="commentary">The backoffice starts with controlled access. Every operator enters with a role, organization and brand scope.</p>
+          </div>
+          <div>
+            <p class="label">Questions</p>
+            <ul>
+              <li>Which roles can access day one?</li>
+              <li>Is 2FA mandatory for all operators?</li>
+              <li>Can one user belong to multiple organizations?</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen">
+        <h2>2. Operations Dashboard</h2>
+        <img class="shot" src="docs/demo-screenshots/02-dashboard.png" alt="Operations dashboard">
+        <div class="grid">
+          <div>
+            <p class="commentary">This is the operator's morning view: live campaigns, blockers, approvals, risk and cost movement.</p>
+          </div>
+          <div>
+            <p class="label">Questions</p>
+            <ul>
+              <li>Which dashboard metrics are mandatory?</li>
+              <li>Should blockers appear before revenue?</li>
+              <li>Which actions should be available directly here?</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen">
+        <h2>3. Campaign Portfolio</h2>
+        <img class="shot" src="docs/demo-screenshots/03-campaigns.png" alt="Campaign portfolio">
+        <div class="grid">
+          <div>
+            <p class="commentary">Campaign managers need to compare mechanic, lifecycle, audience, budget, reward cost and risk in one scanning surface.</p>
+          </div>
+          <div>
+            <p class="label">Questions</p>
+            <ul>
+              <li>What are the final campaign states?</li>
+              <li>Should campaigns group by brand, mechanic, owner or lifecycle?</li>
+              <li>Which columns differ for CRM versus Casino Manager?</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen">
+        <h2>4. Campaign Detail</h2>
+        <img class="shot" src="docs/demo-screenshots/04-campaign-detail.png" alt="Campaign detail">
+        <div class="grid">
+          <div>
+            <p class="commentary">This view should answer whether the campaign is healthy, who it targets, what it costs, what it rewards and what blocks launch.</p>
+          </div>
+          <div>
+            <p class="label">Questions</p>
+            <ul>
+              <li>Which edits require re-approval?</li>
+              <li>Should pausing require a reason note?</li>
+              <li>What audit trail is required?</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen">
+        <h2>5. Campaign Creation</h2>
+        <img class="shot" src="docs/demo-screenshots/05-create-campaign.png" alt="Campaign type picker">
+        <div class="grid">
+          <div>
+            <p class="commentary">The first builder decision is mechanic type. The product owner wants all major campaign types available for prototype testing.</p>
+          </div>
+          <div>
+            <p class="label">Questions</p>
+            <ul>
+              <li>Which mechanics are launch-critical?</li>
+              <li>Which require backend support not yet confirmed?</li>
+              <li>Are there jurisdiction limits by type?</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen">
+        <h2>6. Campaign Review</h2>
+        <img class="shot" src="docs/demo-screenshots/06-builder-review.png" alt="Campaign review">
+        <div class="grid">
+          <div>
+            <p class="commentary">Review is where setup, audience, reward, budget and compliance are checked before submission.</p>
+          </div>
+          <div>
+            <p class="label">Questions</p>
+            <ul>
+              <li>Which checks are hard blockers?</li>
+              <li>Which checks are warnings?</li>
+              <li>Who can submit, approve and launch?</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen">
+        <h2>7. Approval Inbox</h2>
+        <img class="shot" src="docs/demo-screenshots/07-approvals.png" alt="Approval inbox">
+        <div class="grid">
+          <div>
+            <p class="commentary">Approvals are the control layer that makes campaigns, rewards and sensitive player actions license-ready.</p>
+          </div>
+          <div>
+            <p class="label">Questions</p>
+            <ul>
+              <li>Which workflows require approval?</li>
+              <li>Can approvals be delegated?</li>
+              <li>Is approval one-step or multi-step?</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen">
+        <h2>8. Reward Catalog</h2>
+        <img class="shot" src="docs/demo-screenshots/08-rewards.png" alt="Reward catalog">
+        <div class="grid">
+          <div>
+            <p class="commentary">Rewards connect product, finance, integration and risk. The catalog needs fulfillment mode, GUID coverage, health and liability.</p>
+          </div>
+          <div>
+            <p class="label">Questions</p>
+            <ul>
+              <li>Which fulfillment modes are launch scope?</li>
+              <li>Who owns failed reward recovery?</li>
+              <li>Should liability block launch automatically?</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen">
+        <h2>9. Reward Detail</h2>
+        <img class="shot" src="docs/demo-screenshots/09-reward-detail.png" alt="Reward fulfillment detail">
+        <div class="grid">
+          <div>
+            <p class="commentary">This is the backend-sensitive view: fulfillment route, provider contract, test grant, risk gates, audit and reconciliation.</p>
+          </div>
+          <div>
+            <p class="label">Questions</p>
+            <ul>
+              <li>What is the bonus GUID lookup response?</li>
+              <li>What happens when operator fulfillment fails?</li>
+              <li>Do retries need manual approval?</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen">
+        <h2>10. Player Profile</h2>
+        <img class="shot" src="docs/demo-screenshots/10-players.png" alt="Player profile">
+        <div class="grid">
+          <div>
+            <p class="commentary">CRM needs player context, but player actions are sensitive. Value, loyalty, campaigns, rewards and risk need permission boundaries.</p>
+          </div>
+          <div>
+            <p class="label">Questions</p>
+            <ul>
+              <li>Which player fields can CRM see?</li>
+              <li>Which actions require Risk permission?</li>
+              <li>Which actions require reason notes?</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen">
+        <h2>11. Segments</h2>
+        <img class="shot" src="docs/demo-screenshots/11-segments.png" alt="Segments and audiences">
+        <div class="grid">
+          <div>
+            <p class="commentary">Segments power campaigns, loyalty, rewards, exclusions and A/B testing. They need reusable rules and auditability.</p>
+          </div>
+          <div>
+            <p class="label">Questions</p>
+            <ul>
+              <li>Do segments require independent approval?</li>
+              <li>Are segments global, brand-specific or campaign-specific?</li>
+              <li>What is the refresh cadence?</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen">
+        <h2>12. Monitoring</h2>
+        <img class="shot" src="docs/demo-screenshots/12-monitoring.png" alt="Monitoring and incidents">
+        <div class="grid">
+          <div>
+            <p class="commentary">Monitoring is where real-time becomes operational: failed events, provider degradation, campaign health and emergency actions.</p>
+          </div>
+          <div>
+            <p class="label">Questions</p>
+            <ul>
+              <li>Which incidents should page an operator?</li>
+              <li>Can operators replay failed events?</li>
+              <li>Which emergency actions are allowed?</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen">
+        <h2>13. Integrations</h2>
+        <img class="shot" src="docs/demo-screenshots/13-integrations.png" alt="Integrations and provider health">
+        <div class="grid">
+          <div>
+            <p class="commentary">Integrations show whether MonoPulse is connected, trusted and healthy across APIs, webhooks, providers and certification checks.</p>
+          </div>
+          <div>
+            <p class="label">Questions</p>
+            <ul>
+              <li>Which integrations are visible to non-technical users?</li>
+              <li>Who can rotate API keys?</li>
+              <li>What happens when a provider is degraded?</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen">
+        <h2>14. Brands, Org And Permissions</h2>
+        <img class="shot" src="docs/demo-screenshots/14-org.png" alt="Org, brands and permissions">
+        <div class="grid">
+          <div>
+            <p class="commentary">The product owner confirmed org-level visibility with brand-level campaign restriction. This screen turns that into governance.</p>
+          </div>
+          <div>
+            <p class="label">Questions</p>
+            <ul>
+              <li>Is brand access inherited or assigned independently?</li>
+              <li>Can a campaign target multiple brands?</li>
+              <li>Which permission changes require approval?</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen">
+        <h2>15. Settings</h2>
+        <img class="shot" src="docs/demo-screenshots/15-settings.png" alt="Settings and governance">
+        <div class="grid">
+          <div>
+            <p class="commentary">Settings should be about defaults, approval rules, notification preferences and governance, not a dumping ground.</p>
+          </div>
+          <div>
+            <p class="label">Questions</p>
+            <ul>
+              <li>Which defaults are org-level versus brand-level?</li>
+              <li>Which are preferences versus compliance rules?</li>
+              <li>Who can change approval thresholds?</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen">
+        <h2>16. Global Command Palette</h2>
+        <img class="shot" src="docs/demo-screenshots/16-command-palette.png" alt="Global command palette">
+        <div class="grid">
+          <div>
+            <p class="commentary">Operators move quickly between campaigns, players, rewards, approvals and incidents. Search is the speed layer.</p>
+          </div>
+          <div>
+            <p class="label">Questions</p>
+            <ul>
+              <li>Which objects should be searchable?</li>
+              <li>Should search include external platform IDs?</li>
+              <li>How should restricted results appear?</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen">
+        <h2>17. Action Modal Pattern</h2>
+        <img class="shot" src="docs/demo-screenshots/17-action-modal.png" alt="Action modal with permission check">
+        <div class="grid">
+          <div>
+            <p class="commentary">High-risk actions need one consistent pattern: permission check, form inputs, consequence preview, backend contract and audit state.</p>
+          </div>
+          <div>
+            <p class="label">Questions</p>
+            <ul>
+              <li>Which actions need confirmation versus approval?</li>
+              <li>Which payload fields are mandatory?</li>
+              <li>What should users see when an action fails?</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
