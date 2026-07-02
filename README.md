@@ -25,7 +25,7 @@ npm run build
 
 Shareable demo:
 
-- [Live GitHub Pages demo](https://neighbor131.github.io/monopulse-sample/)
+- [Live Netlify demo](https://roaring-cocada-6272cb.netlify.app)
 
 Best demo entry:
 
