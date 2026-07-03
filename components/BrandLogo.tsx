@@ -1,4 +1,5 @@
-import logoMark from '../assets/brand/monopulse-logogram.png';
+import logoFull from '../assets/brand/monopulse-logo.svg';
+import logoMark from '../assets/brand/monopulse-mark.svg';
 
 interface BrandLogoProps {
   showName?: boolean;
@@ -12,16 +13,26 @@ const SIZE = {
   lg: 'h-10 w-10',
 };
 
+const FULL_SIZE = {
+  sm: 'h-5 w-[92px]',
+  md: 'h-6 w-[112px]',
+  lg: 'h-8 w-[148px]',
+};
+
 export default function BrandLogo({ showName = true, size = 'md', className = '' }: BrandLogoProps) {
+  if (showName) {
+    return (
+      <img
+        src={logoFull}
+        alt="MonoPulse"
+        className={`${FULL_SIZE[size]} shrink-0 object-contain object-left ${className}`}
+      />
+    );
+  }
+
   return (
     <div className={`flex min-w-0 items-center gap-2.5 ${className}`}>
       <img src={logoMark} alt="MonoPulse logogram" className={`${SIZE[size]} shrink-0 object-contain`} />
-      {showName && (
-        <span className="min-w-0 text-[15px] font-semibold tracking-tight">
-          <span className="text-fg-primary">Mono</span>
-          <span style={{ color: 'var(--accent)' }}>Pulse</span>
-        </span>
-      )}
     </div>
   );
 }
