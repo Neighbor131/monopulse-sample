@@ -1,7 +1,8 @@
 import { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Activity, AlertTriangle, Check, ChevronDown, Code2, Copy, Eye, KeyRound,
-  Plug, RefreshCw, RotateCcw, Search, ServerCog, ShieldCheck, Webhook, X,
+  Plug, Plus, RefreshCw, RotateCcw, Search, ServerCog, ShieldCheck, Webhook, X,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { BRANDS } from '../data/campaigns';
@@ -17,6 +18,7 @@ const EMPTY: Filters = { brand: '', env: '', provider: '', event: '', severity: 
 type Detail = { title: string; subtitle: string; body: React.ReactNode; actions?: { icon: LucideIcon; label: string }[] } | null;
 
 export default function Integrations() {
+  const navigate = useNavigate();
   const [tab, setTab] = useState<TabId>('overview');
   const [f, setF] = useState<Filters>(EMPTY);
   const [detail, setDetail] = useState<Detail>(null);
@@ -61,9 +63,14 @@ export default function Integrations() {
           </div>
           <p className="mt-1 text-[13px] text-fg-secondary">Verify API keys, event ingestion, webhook delivery, reward calls, provider health and sandbox certification.</p>
         </div>
-        <button className="flex items-center gap-1.5 rounded-md px-3.5 py-2 text-[13px] font-semibold" style={{ background: 'var(--accent)', color: 'var(--accent-fg)' }}>
-          <RefreshCw size={15} strokeWidth={2.25} /> Run health check
-        </button>
+        <div className="flex items-center gap-2">
+          <button className="flex items-center gap-1.5 rounded-md border px-3.5 py-2 text-[13px] font-semibold text-fg-secondary" style={{ borderColor: 'var(--border-strong)', background: 'var(--surface-2)' }}>
+            <RefreshCw size={15} strokeWidth={2.25} /> Run health check
+          </button>
+          <button onClick={() => navigate('/integrations/setup')} className="flex items-center gap-1.5 rounded-md px-3.5 py-2 text-[13px] font-semibold" style={{ background: 'var(--accent)', color: 'var(--accent-fg)' }}>
+            <Plus size={15} strokeWidth={2.25} /> Setup integration
+          </button>
+        </div>
       </div>
 
       <div className="mt-5 grid grid-cols-6 gap-3">

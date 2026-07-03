@@ -122,6 +122,14 @@ export default function Layout({ children }: { children: ReactNode }) {
       href: '/integrations',
       tone: provider.status === 'failing' ? 'danger' as const : provider.status === 'degraded' ? 'warning' as const : 'success' as const,
     })),
+    {
+      id: 'integration-setup',
+      type: 'Integration',
+      title: 'Setup integration',
+      detail: 'API credentials · webhooks · event mapping · certification',
+      href: '/integrations/setup',
+      tone: 'warning' as const,
+    },
   ], [queue]);
 
   const filteredItems = searchItems.filter((item) => {

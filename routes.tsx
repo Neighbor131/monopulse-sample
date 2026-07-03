@@ -15,6 +15,7 @@ import Rewards from './screens/Rewards';
 import RewardDetail from './screens/RewardDetail';
 import Segments from './screens/Segments';
 import Integrations from './screens/Integrations';
+import IntegrationSetup from './screens/IntegrationSetup';
 import BrandsOrg from './screens/BrandsOrg';
 import Monitoring from './screens/Monitoring';
 import CampaignDetail from './screens/CampaignDetail';
@@ -46,6 +47,7 @@ export default function AppRoutes() {
       <Route path="/segments" element={<Layout><Segments /></Layout>} />
       <Route path="/monitoring" element={<Layout><Monitoring /></Layout>} />
       <Route path="/integrations" element={<Layout><Integrations /></Layout>} />
+      <Route path="/integrations/setup" element={<Layout><IntegrationSetup /></Layout>} />
       <Route path="/org" element={<Layout><BrandsOrg /></Layout>} />
       <Route path="/safety" element={<Layout><SafetyOps /></Layout>} />
       <Route path="/approvals" element={<Layout><ApprovalInbox /></Layout>} />

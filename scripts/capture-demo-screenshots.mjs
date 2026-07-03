@@ -18,6 +18,7 @@ const shots = [
   { name: '11-segments', path: '/segments', title: 'Segments and audiences' },
   { name: '12-monitoring', path: '/monitoring', title: 'Monitoring and incidents' },
   { name: '13-integrations', path: '/integrations', title: 'Integrations and provider health' },
+  { name: '19-integration-setup', path: '/integrations/setup', title: 'Integration setup wizard' },
   { name: '14-org', path: '/org', title: 'Org, brands and permissions' },
   { name: '15-settings', path: '/settings', title: 'Settings and governance' },
   { name: '18-campaign-ops', path: '/ops', title: 'Campaign Ops calendar, tasks and reports' },

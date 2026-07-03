@@ -29,9 +29,10 @@ The design target is a dense, operational backoffice for CRM/Retention Managers 
 11. Inspect player profile at `/players/PLR-88213`
 12. Open monitoring at `/monitoring`
 13. Review integrations at `/integrations`
-14. Review org roles and permissions at `/org`
-15. Open global search with `Cmd/Ctrl + K`
-16. Open notifications and account/org menus from the top bar
+14. Walk through integration setup at `/integrations/setup`
+15. Review org roles and permissions at `/org`
+16. Open global search with `Cmd/Ctrl + K`
+17. Open notifications and account/org menus from the top bar
 
 ## Route Map
 
@@ -58,6 +59,7 @@ The design target is a dense, operational backoffice for CRM/Retention Managers 
 | `/segments` | Audience segment library and builder |
 | `/monitoring` | Live ops, incidents, event stream, emergency actions |
 | `/integrations` | API keys, webhooks, event logs, provider health |
+| `/integrations/setup` | Integration setup, event mapping, reward route, certification |
 | `/org` | Brands, users, roles, permissions, restrictions |
 | `/safety` | Risk/compliance operations |
 | `/approvals` | Approval inbox |
@@ -159,6 +161,7 @@ Backend and full-stack teams will likely care most about:
 - Reward fulfillment: provider route, bonus GUID mapping, wallet payout, trigger response.
 - Risk gates: RG exclusions, KYC, jurisdiction, fraud, budget caps, liability caps.
 - Integration health: API keys, webhooks, providers, certification checks.
+- Integration setup: environment scope, API scopes, HMAC signing, event mapping, reward route, sandbox certification.
 
 ## Known Prototype Limits
 
@@ -188,10 +191,15 @@ Backend and full-stack teams will likely care most about:
 2. Deepen Campaign Ops with comments, assignee edit, drag-reschedule and task detail drawer.
 3. Add empty/error/loading states for each major section.
 4. Add backend payload examples for ops tasks and generated reports.
-5. QA narrow viewport behavior for tables, rails and modals.
+5. Add campaign type-specific configuration depth for missions, tournaments, leaderboards and jackpots.
+6. QA narrow viewport behavior for tables, rails and modals.
 
 ## Companion Docs
 
 - [Browser presentation demo](./DEMO_SCRIPT_PRESENTATION.html)
 - [Backend contract appendix](./BACKEND_CONTRACT_APPENDIX.md)
+- [API contract draft](./docs/API_CONTRACT.md)
+- [Data model draft](./docs/DATA_MODEL.md)
+- [Event contract draft](./docs/EVENT_CONTRACT.md)
+- [Permissions and audit draft](./docs/PERMISSIONS_AND_AUDIT.md)
 - [UX QA checklist](./QA_CHECKLIST.md)
