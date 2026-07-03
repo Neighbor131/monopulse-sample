@@ -11,6 +11,7 @@ import {
   integrationKpis,
 } from '../data/integrations';
 import type { ApiKey, DeliveryStatus, Env, EventLog, Health, ProviderHealth, WebhookEndpoint } from '../data/integrations';
+import { DemoStateHint, LoadingBlock, StateCard, useDemoState } from '../components/StateViews';
 
 type TabId = 'overview' | 'keys' | 'webhooks' | 'events' | 'failures' | 'rewards' | 'providers' | 'certification';
 interface Filters { brand: string; env: string; provider: string; event: string; severity: string; q: string }
@@ -19,6 +20,7 @@ type Detail = { title: string; subtitle: string; body: React.ReactNode; actions?
 
 export default function Integrations() {
   const navigate = useNavigate();
+  const demoState = useDemoState();
   const [tab, setTab] = useState<TabId>('overview');
   const [f, setF] = useState<Filters>(EMPTY);
   const [detail, setDetail] = useState<Detail>(null);
@@ -35,12 +37,12 @@ export default function Integrations() {
     return true;
   };
 
-  const keys = API_KEYS.filter((x) => match({ brand: x.brand, env: x.env, status: x.status, q: `${x.id} ${x.name} ${x.owner} ${x.scopes.join(' ')}` }));
-  const hooks = WEBHOOKS.filter((x) => match({ brand: x.brand, env: x.env, status: x.status, q: `${x.id} ${x.url} ${x.events.join(' ')}` }));
-  const events = EVENT_LOGS.filter((x) => match({ brand: x.brand, env: x.env, eventType: x.eventType, status: x.status, q: `${x.id} ${x.playerId} ${x.eventType} ${x.campaign ?? ''}` }));
+  const keys = demoState === 'empty' ? [] : API_KEYS.filter((x) => match({ brand: x.brand, env: x.env, status: x.status, q: `${x.id} ${x.name} ${x.owner} ${x.scopes.join(' ')}` }));
+  const hooks = demoState === 'empty' ? [] : WEBHOOKS.filter((x) => match({ brand: x.brand, env: x.env, status: x.status, q: `${x.id} ${x.url} ${x.events.join(' ')}` }));
+  const events = demoState === 'empty' ? [] : EVENT_LOGS.filter((x) => match({ brand: x.brand, env: x.env, eventType: x.eventType, status: x.status, q: `${x.id} ${x.playerId} ${x.eventType} ${x.campaign ?? ''}` }));
   const failed = events.filter((x) => x.status !== 'delivered');
   const rewards = events.filter((x) => x.eventType.includes('reward') || x.eventType.includes('jackpot'));
-  const providers = PROVIDERS.filter((x) => match({ brand: x.brand, env: x.env, provider: x.provider, status: x.status, q: `${x.provider} ${x.kind} ${x.incident ?? ''}` }));
+  const providers = demoState === 'empty' ? [] : PROVIDERS.filter((x) => match({ brand: x.brand, env: x.env, provider: x.provider, status: x.status, q: `${x.provider} ${x.kind} ${x.incident ?? ''}` }));
 
   const tabs: { id: TabId; label: string; count?: number }[] = [
     { id: 'overview', label: 'Overview' },
@@ -110,7 +112,39 @@ export default function Integrations() {
         </div>
       )}
 
-      <div className="mt-4">
+      {demoState === 'error' && (
+        <div className="mt-4">
+          <StateCard
+            state="error"
+            title="Integration health could not be verified"
+            detail="Technical users need a clear warning when event logs, provider status or webhook delivery cannot be trusted. Risky sync and reward actions should wait."
+            onAction={() => navigate('/integrations')}
+          />
+          <DemoStateHint area="integration states" />
+        </div>
+      )}
+
+      {demoState === 'loading' && (
+        <div className="mt-4">
+          <LoadingBlock title="Loading integrations" rows={6} />
+          <DemoStateHint area="integration states" />
+        </div>
+      )}
+
+      {demoState === 'empty' && (
+        <div className="mt-4">
+          <StateCard
+            state="empty"
+            title="No integrations connected"
+            detail="The first-run state should guide a technical admin toward API keys, webhooks, event mapping and sandbox certification."
+            actionLabel="Setup integration"
+            onAction={() => navigate('/integrations/setup')}
+          />
+          <DemoStateHint area="integration states" />
+        </div>
+      )}
+
+      {demoState === null && <div className="mt-4">
         {tab === 'overview' && <Overview onTab={setTab} />}
         {tab === 'keys' && <ApiKeyTable rows={keys} onOpen={(x) => setDetail(apiKeyDetail(x))} />}
         {tab === 'webhooks' && <WebhookTable rows={hooks} onOpen={(x) => setDetail(webhookDetail(x))} />}
@@ -119,7 +153,8 @@ export default function Integrations() {
         {tab === 'rewards' && <EventTable rows={rewards} onOpen={(x) => setDetail(eventDetail(x))} />}
         {tab === 'providers' && <ProviderTable rows={providers} onOpen={(x) => setDetail(providerDetail(x))} />}
         {tab === 'certification' && <Certification />}
-      </div>
+      </div>}
+      {demoState === null && <DemoStateHint area="integration states" />}
 
       <DetailDrawer detail={detail} onClose={() => setDetail(null)} />
     </div>

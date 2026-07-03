@@ -8,6 +8,7 @@ import {
   PLAYERS, COUNTRIES, PLAYER_SEGMENTS, playerKpis,
   PLAYER_STATUS_META, RISK_META, KYC_META, RG_META,
 } from '../data/players';
+import { DemoStateHint, LoadingBlock, StateCard, useDemoState } from '../components/StateViews';
 import type { Player, PlayerStatus, RiskFlag, KycStatus, RgStatus } from '../data/players';
 
 interface Filters { brand: string; country: string; tier: string; risk: string; campaign: string; kyc: string; rg: string; segment: string; q: string }
@@ -16,11 +17,14 @@ const EMPTY: Filters = { brand: '', country: '', tier: '', risk: '', campaign: '
 const ALL_CAMPAIGNS = Array.from(new Set(PLAYERS.flatMap((p) => p.activeCampaigns)));
 
 export default function Players() {
+  const demoState = useDemoState();
   const [f, setF] = useState<Filters>(EMPTY);
   const navigate = useNavigate();
   const set = (patch: Partial<Filters>) => setF((p) => ({ ...p, ...patch }));
 
-  const rows = useMemo(() => PLAYERS.filter((p) => {
+  const rows = useMemo(() => {
+    if (demoState === 'empty') return [];
+    return PLAYERS.filter((p) => {
     if (f.brand && p.brand !== f.brand) return false;
     if (f.country && p.country !== f.country) return false;
     if (f.tier && p.tier !== f.tier) return false;
@@ -33,8 +37,9 @@ export default function Players() {
       const q = f.q.toLowerCase();
       if (!`${p.id} ${p.alias} ${p.emailHash} ${p.externalId}`.toLowerCase().includes(q)) return false;
     }
-    return true;
-  }), [f]);
+      return true;
+    });
+  }, [demoState, f]);
 
   const kpis = useMemo(() => playerKpis(rows), [rows]);
   const anyFilter = Object.values(f).some(Boolean);
@@ -75,8 +80,27 @@ export default function Players() {
         {anyFilter && <button onClick={() => setF(EMPTY)} className="text-[12px] font-medium" style={{ color: 'var(--accent)' }}>Clear</button>}
       </div>
 
+      {demoState === 'error' && (
+        <div className="mt-4">
+          <StateCard
+            state="error"
+            title="Player search is temporarily unavailable"
+            detail="The UI should keep filters visible, explain that player data did not load, and prevent risky player actions until the source recovers."
+            onAction={() => navigate('/players')}
+          />
+          <DemoStateHint area="player list states" />
+        </div>
+      )}
+
+      {demoState === 'loading' && (
+        <div className="mt-4">
+          <LoadingBlock title="Loading players" rows={7} />
+          <DemoStateHint area="player list states" />
+        </div>
+      )}
+
       {/* Table */}
-      <div className="mt-4 overflow-hidden rounded-xl border" style={{ borderColor: 'var(--border-subtle)' }}>
+      {demoState !== 'error' && demoState !== 'loading' && <div className="mt-4 overflow-hidden rounded-xl border" style={{ borderColor: 'var(--border-subtle)' }}>
         <div className="overflow-x-auto">
           <table className="min-w-[1180px] w-full border-collapse text-left">
             <thead>
@@ -131,7 +155,8 @@ export default function Players() {
             </tbody>
           </table>
         </div>
-      </div>
+      </div>}
+      {demoState !== 'error' && demoState !== 'loading' && <DemoStateHint area="player list states" />}
     </div>
   );
 }

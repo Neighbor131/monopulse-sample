@@ -13,6 +13,7 @@ import {
   ArrowUpDown,
 } from 'lucide-react';
 import StatusBadge from '../components/StatusBadge';
+import { DemoStateHint, LoadingBlock, StateCard, useDemoState } from '../components/StateViews';
 import {
   CAMPAIGNS,
   BRANDS,
@@ -50,6 +51,7 @@ function budgetColor(ratio: number): string {
 
 export default function CampaignsList() {
   const navigate = useNavigate();
+  const demoState = useDemoState();
   const [filter, setFilter] = useState<CampaignStatus | 'all'>('all');
   const [query, setQuery] = useState('');
   const [openMenu, setOpenMenu] = useState<MenuState>(null);
@@ -66,12 +68,13 @@ export default function CampaignsList() {
   );
 
   const rows = useMemo(() => {
+    if (demoState === 'empty') return [];
     return CAMPAIGNS.filter((c) => {
       if (filter !== 'all' && c.status !== filter) return false;
       if (query && !c.name.toLowerCase().includes(query.toLowerCase())) return false;
       return true;
     });
-  }, [filter, query]);
+  }, [demoState, filter, query]);
 
   return (
     <div className="mx-auto max-w-[1400px] px-8 py-7">
@@ -164,8 +167,27 @@ export default function CampaignsList() {
         </div>
       </div>
 
+      {demoState === 'error' && (
+        <div className="mt-4">
+          <StateCard
+            state="error"
+            title="Campaigns could not be loaded"
+            detail="The operator can still see the shell, but the campaign portfolio should explain the failed data source and offer a retry path."
+            onAction={() => navigate('/')}
+          />
+          <DemoStateHint area="campaign portfolio states" />
+        </div>
+      )}
+
+      {demoState === 'loading' && (
+        <div className="mt-4">
+          <LoadingBlock title="Loading campaigns" rows={6} />
+          <DemoStateHint area="campaign portfolio states" />
+        </div>
+      )}
+
       {/* Table */}
-      <div
+      {demoState !== 'error' && demoState !== 'loading' && <div
         className="mt-4 overflow-hidden rounded-xl border"
         style={{ borderColor: 'var(--border-subtle)', background: 'var(--surface-1)' }}
       >
@@ -216,7 +238,7 @@ export default function CampaignsList() {
             </button>
           </div>
         )}
-      </div>
+      </div>}
 
       {/* Click-away for menus */}
       {openMenu && (
@@ -241,9 +263,10 @@ export default function CampaignsList() {
         </>
       )}
 
-      <div className="mt-3 text-[12px] text-fg-muted">
+      {demoState !== 'error' && demoState !== 'loading' && <div className="mt-3 text-[12px] text-fg-muted">
         Showing {rows.length} of {CAMPAIGNS.length} campaigns
-      </div>
+      </div>}
+      {demoState !== 'error' && demoState !== 'loading' && <DemoStateHint area="campaign portfolio states" />}
     </div>
   );
 }

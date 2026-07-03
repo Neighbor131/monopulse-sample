@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   Activity,
@@ -19,6 +18,7 @@ import { CAMPAIGNS, fmtMoney, fmtNum, getType } from '../data/campaigns';
 import { EVENT_LOGS } from '../data/integrations';
 import { MANUAL_REWARDS, WEBHOOK_FAILURES } from '../data/safety';
 import { SEGMENTS } from '../data/segments';
+import { StateCard } from '../components/StateViews';
 
 const requirementMap: Record<string, { label: string; value: string; tone?: 'warning' | 'danger' | 'success' }[]> = {
   mission: [
@@ -71,17 +71,30 @@ const requirementMap: Record<string, { label: string; value: string; tone?: 'war
 export default function CampaignDetail() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const campaign = CAMPAIGNS.find((c) => c.id === id) ?? CAMPAIGNS[0];
+  const campaign = CAMPAIGNS.find((c) => c.id === id);
+  if (!campaign) {
+    return (
+      <div className="mx-auto w-full max-w-[1360px] px-8 py-24">
+        <StateCard
+          state="not-found"
+          title="Campaign not found"
+          detail="This campaign may have been archived, removed from the current brand scope, or opened from a stale notification."
+          actionLabel="Back to campaigns"
+          onAction={() => navigate('/')}
+        />
+      </div>
+    );
+  }
   const type = getType(campaign.type);
   const TypeIcon = type.icon;
   const budgetRatio = campaign.budgetTotal ? Math.round((campaign.budgetUsed / campaign.budgetTotal) * 100) : 0;
 
-  const connected = useMemo(() => ({
+  const connected = {
     events: EVENT_LOGS.filter((e) => e.campaign === campaign.name || e.brand === campaign.brands[0]),
     rewards: MANUAL_REWARDS.filter((r) => r.campaignName === campaign.name || r.brand === campaign.brands[0]),
     failures: WEBHOOK_FAILURES.filter((w) => w.campaignName === campaign.name || w.brand === campaign.brands[0]),
     segments: SEGMENTS.filter((s) => s.usage.some((u) => u.name === campaign.name || campaign.name.includes(u.name))),
-  }), [campaign]);
+  };
 
   return (
     <div className="mx-auto w-full max-w-[1360px] px-8 py-6">

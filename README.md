@@ -81,9 +81,23 @@ Read in this order:
 | `/org` | Brands, users, permissions |
 | `/settings` | Account/org settings |
 
+## State Preview Links
+
+Several high-risk screens support demo state previews through the `state` query parameter:
+
+| State | Example |
+| --- | --- |
+| Empty | `/dashboard?state=empty` |
+| Loading | `/players?state=loading` |
+| Error | `/integrations?state=error` |
+| Not found | `/campaigns/unknown-id` |
+
+Covered state-preview screens: dashboard, campaign portfolio, approvals, rewards, players and integrations.
+
 ## Prototype Notes
 
 - Data is static mock data.
+- Empty, loading and error states are previewed with `?state=empty`, `?state=loading` and `?state=error` on selected screens.
 - Actions are UI-only and do not persist after refresh.
 - The prototype is desktop-first.
 - Production build passes.

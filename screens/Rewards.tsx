@@ -21,6 +21,7 @@ import {
 import type { Icon } from 'iconsax-react';
 import ActionModal from '../components/ActionModal';
 import type { ActionModalState } from '../components/ActionModal';
+import { DemoStateHint, LoadingBlock, StateCard, useDemoState } from '../components/StateViews';
 import { BRANDS } from '../data/campaigns';
 import {
   FULFILLMENT_LABEL,
@@ -55,6 +56,7 @@ const EMPTY: Filters = { brand: '', kind: '', status: '', health: '', q: '' };
 
 export default function Rewards() {
   const navigate = useNavigate();
+  const demoState = useDemoState();
   const [tab, setTab] = useState<TabId>('overview');
   const [f, setF] = useState<Filters>(EMPTY);
   const [detail, setDetail] = useState<Detail>(null);
@@ -62,7 +64,7 @@ export default function Rewards() {
   const kpis = useMemo(() => rewardKpis(), []);
   const set = (patch: Partial<Filters>) => setF((p) => ({ ...p, ...patch }));
 
-  const rewards = REWARDS.filter((r) => {
+  const rewards = demoState === 'empty' ? [] : REWARDS.filter((r) => {
     if (f.brand && r.brand !== f.brand) return false;
     if (f.kind && r.kind !== f.kind) return false;
     if (f.status && r.status !== f.status) return false;
@@ -70,14 +72,14 @@ export default function Rewards() {
     if (f.q && !`${r.id} ${r.name} ${r.campaignUse} ${r.provider} ${r.bonusGuid ?? ''}`.toLowerCase().includes(f.q.toLowerCase())) return false;
     return true;
   });
-  const grants = MANUAL_GRANTS.filter((g) => {
+  const grants = demoState === 'empty' ? [] : MANUAL_GRANTS.filter((g) => {
     if (f.brand && g.brand !== f.brand) return false;
     if (f.status && g.status !== f.status) return false;
     if (f.health && g.risk !== f.health) return false;
     if (f.q && !`${g.id} ${g.rewardName} ${g.playerId} ${g.reason}`.toLowerCase().includes(f.q.toLowerCase())) return false;
     return true;
   });
-  const gates = RISK_GATES.filter((g) => {
+  const gates = demoState === 'empty' ? [] : RISK_GATES.filter((g) => {
     if (f.health && g.status !== f.health) return false;
     if (f.q && !`${g.label} ${g.scope} ${g.impact}`.toLowerCase().includes(f.q.toLowerCase())) return false;
     return true;
@@ -149,7 +151,39 @@ export default function Rewards() {
         </div>
       )}
 
-      <div className="mt-4">
+      {demoState === 'error' && (
+        <div className="mt-4">
+          <StateCard
+            state="error"
+            title="Reward data source is unavailable"
+            detail="Reward actions should be paused when GUID mapping, liability or fulfillment health cannot be verified."
+            onAction={() => navigate('/rewards')}
+          />
+          <DemoStateHint area="reward states" />
+        </div>
+      )}
+
+      {demoState === 'loading' && (
+        <div className="mt-4">
+          <LoadingBlock title="Loading rewards" rows={6} />
+          <DemoStateHint area="reward states" />
+        </div>
+      )}
+
+      {demoState === 'empty' && (
+        <div className="mt-4">
+          <StateCard
+            state="empty"
+            title="No rewards configured yet"
+            detail="The reward catalog should explain that campaigns cannot launch with reward mechanics until at least one wallet, bonus GUID or MonoPulse trigger is configured."
+            actionLabel="Create reward"
+            onAction={() => setAction({ kind: 'newReward' })}
+          />
+          <DemoStateHint area="reward states" />
+        </div>
+      )}
+
+      {demoState === null && <div className="mt-4">
         {tab === 'overview' && <Overview setTab={setTab} openReward={(r) => navigate(`/rewards/${r.id}`)} />}
         {tab === 'library' && <RewardTable rows={rewards} onOpen={(r) => navigate(`/rewards/${r.id}`)} />}
         {tab === 'fulfillment' && <Fulfillment rows={rewards} onOpen={(r) => navigate(`/rewards/${r.id}`)} />}
@@ -157,7 +191,8 @@ export default function Rewards() {
         {tab === 'liability' && <Liability setDetail={setDetail} />}
         {tab === 'risk' && <RiskGates rows={gates} onOpen={(g) => setDetail(gateDetail(g))} />}
         {tab === 'audit' && <Audit rows={REWARD_AUDIT} onOpen={(a) => setDetail(auditDetail(a))} />}
-      </div>
+      </div>}
+      {demoState === null && <DemoStateHint area="reward states" />}
 
       <DetailDrawer detail={detail} onClose={() => setDetail(null)} />
       <ActionModal state={action} onClose={() => setAction(null)} />

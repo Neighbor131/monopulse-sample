@@ -19,6 +19,7 @@ import RewardsTab from '../components/players/RewardsTab';
 import RiskTab from '../components/players/RiskTab';
 import LedgerTab from '../components/players/LedgerTab';
 import TimelineTab from '../components/players/TimelineTab';
+import { StateCard } from '../components/StateViews';
 
 const TABS = ['Overview', 'Campaigns', 'Loyalty', 'Rewards', 'Risk', 'Ledger', 'Timeline'] as const;
 type Tab = typeof TABS[number];
@@ -38,9 +39,14 @@ export default function PlayerProfile() {
 
   if (!p) {
     return (
-      <div className="mx-auto flex w-full max-w-[1360px] flex-col items-center gap-3 px-8 py-24 text-center">
-        <p className="text-[14px] font-medium text-fg-primary">Player not found</p>
-        <button onClick={() => navigate('/players')} className="text-[13px] font-medium" style={{ color: 'var(--accent)' }}>← Back to players</button>
+      <div className="mx-auto w-full max-w-[1360px] px-8 py-24">
+        <StateCard
+          state="not-found"
+          title="Player not found"
+          detail="The player may belong to another brand scope, be hidden by permissions, or no longer exist in the operator platform."
+          actionLabel="Back to players"
+          onAction={() => navigate('/players')}
+        />
       </div>
     );
   }

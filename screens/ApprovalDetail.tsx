@@ -15,6 +15,7 @@ import AuditTimeline from '../components/review/AuditTimeline';
 import FulfillmentHealth from '../components/review/FulfillmentHealth';
 import DecisionPanel from '../components/review/DecisionPanel';
 import type { DecisionAction } from '../components/review/DecisionPanel';
+import { StateCard } from '../components/StateViews';
 
 const SETTLED_META: Record<string, { label: string; fg: string }> = {
   changes_requested: { label: 'Changes requested', fg: 'var(--status-scheduled)' },
@@ -32,9 +33,14 @@ export default function ApprovalDetail() {
 
   if (!review) {
     return (
-      <div className="mx-auto flex w-full max-w-[1240px] flex-col items-center px-8 py-24 text-center">
-        <p className="text-[14px] font-medium text-fg-primary">Review not found</p>
-        <button onClick={() => navigate('/approvals')} className="mt-3 text-[13px] font-medium" style={{ color: 'var(--accent)' }}>Back to queue</button>
+      <div className="mx-auto w-full max-w-[1240px] px-8 py-24">
+        <StateCard
+          state="not-found"
+          title="Review not found"
+          detail="This approval may have been resolved, revoked or removed from the current org context."
+          actionLabel="Back to queue"
+          onAction={() => navigate('/approvals')}
+        />
       </div>
     );
   }

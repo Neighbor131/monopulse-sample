@@ -30,6 +30,7 @@ import {
   timeline,
 } from '../data/dashboard';
 import type { ActionQueueItem, DashboardSeverity, ExperimentRow, TimelineItem } from '../data/dashboard';
+import { DemoStateHint, LoadingBlock, LoadingCards, StateCard, useDemoState } from '../components/StateViews';
 
 const HEALTH_ICON: Record<string, Icon> = {
   campaigns: StatusUp,
@@ -59,6 +60,7 @@ const TIMELINE_ICON: Record<TimelineItem['kind'], Icon> = {
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const demoState = useDemoState();
   const health = healthCards();
   const queue = actionQueue();
   const metrics = performanceMetrics();
@@ -83,6 +85,42 @@ export default function Dashboard() {
           </button>
         </div>
       </div>
+
+      {demoState === 'error' && (
+        <div className="mt-5">
+          <StateCard
+            state="error"
+            title="Dashboard data is delayed"
+            detail="Health cards, action queue and timeline depend on multiple backend services. The empty shell should stay usable while the app explains which data source failed."
+            onAction={() => navigate('/dashboard')}
+          />
+          <DemoStateHint area="dashboard states" />
+        </div>
+      )}
+
+      {demoState === 'loading' && (
+        <div className="mt-5 grid gap-5">
+          <LoadingCards count={6} />
+          <LoadingBlock title="Loading dashboard queue" rows={5} />
+          <DemoStateHint area="dashboard states" />
+        </div>
+      )}
+
+      {demoState === 'empty' && (
+        <div className="mt-5 grid gap-5">
+          <StateCard
+            state="empty"
+            title="No urgent work right now"
+            detail="This is the ideal calm state: no approvals waiting, no failed rewards, no integration incidents and no blocked campaigns."
+            actionLabel="Create campaign"
+            onAction={() => navigate('/create')}
+          />
+          <DemoStateHint area="dashboard states" />
+        </div>
+      )}
+
+      {demoState && demoState !== null ? null : (
+        <>
 
       <div className="mt-5 grid grid-cols-6 gap-3">
         {health.map((h) => <HealthCard key={h.id} card={h} onOpen={() => navigate(h.href)} />)}
@@ -162,6 +200,9 @@ export default function Dashboard() {
           </table>
         </div>
       </section>
+      <DemoStateHint area="dashboard states" />
+        </>
+      )}
     </div>
   );
 }

@@ -6,6 +6,7 @@ import type { Review, ReviewDecision } from '../data/reviews';
 import { useReviews } from '../context/ReviewsContext';
 import { getType, fmtMoney, fmtNum, initials } from '../data/campaigns';
 import ReviewStatusBadge from '../components/review/ReviewStatusBadge';
+import { DemoStateHint, LoadingBlock, StateCard, useDemoState } from '../components/StateViews';
 
 type Filter = 'queue' | ReviewDecision | 'all';
 
@@ -22,11 +23,13 @@ const FILTERS: { id: Filter; label: string }[] = [
 
 export default function ApprovalInbox() {
   const navigate = useNavigate();
+  const demoState = useDemoState();
   const [filter, setFilter] = useState<Filter>('queue');
   const [query, setQuery] = useState('');
   const { reviews, counts } = useReviews();
 
   const rows = useMemo(() => {
+    if (demoState === 'empty') return [];
     return reviews.filter((r) => {
       const matchQ = r.name.toLowerCase().includes(query.toLowerCase()) || r.submittedBy.toLowerCase().includes(query.toLowerCase());
       if (!matchQ) return false;
@@ -34,7 +37,7 @@ export default function ApprovalInbox() {
       if (filter === 'queue') return ['pending', 'blocked', 'reset'].includes(r.decision);
       return r.decision === filter;
     });
-  }, [filter, query, reviews]);
+  }, [demoState, filter, query, reviews]);
 
   return (
     <div className="mx-auto w-full max-w-[1240px] px-8 py-6">
@@ -83,8 +86,27 @@ export default function ApprovalInbox() {
         </div>
       </div>
 
+      {demoState === 'error' && (
+        <div className="mt-4">
+          <StateCard
+            state="error"
+            title="Approval queue failed to load"
+            detail="Approvers need a clear stop state here: no decisions should be taken when review packets, blockers or audit history cannot be trusted."
+            onAction={() => navigate('/approvals')}
+          />
+          <DemoStateHint area="approval queue states" />
+        </div>
+      )}
+
+      {demoState === 'loading' && (
+        <div className="mt-4">
+          <LoadingBlock title="Loading approvals" rows={5} />
+          <DemoStateHint area="approval queue states" />
+        </div>
+      )}
+
       {/* Table */}
-      <div className="mt-4 overflow-hidden rounded-xl border" style={{ borderColor: 'var(--border-subtle)' }}>
+      {demoState !== 'error' && demoState !== 'loading' && <div className="mt-4 overflow-hidden rounded-xl border" style={{ borderColor: 'var(--border-subtle)' }}>
         <table className="w-full border-collapse text-left">
           <thead>
             <tr className="text-[10.5px] font-semibold uppercase tracking-wider text-fg-muted" style={{ background: 'var(--surface-1)' }}>
@@ -117,7 +139,8 @@ export default function ApprovalInbox() {
             )}
           </tbody>
         </table>
-      </div>
+      </div>}
+      {demoState !== 'error' && demoState !== 'loading' && <DemoStateHint area="approval queue states" />}
     </div>
   );
 }

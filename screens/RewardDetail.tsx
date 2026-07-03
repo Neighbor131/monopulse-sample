@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   Activity,
@@ -18,6 +18,7 @@ import {
 import type { LucideIcon } from 'lucide-react';
 import ActionModal from '../components/ActionModal';
 import type { ActionModalState } from '../components/ActionModal';
+import { StateCard } from '../components/StateViews';
 import {
   FULFILLMENT_LABEL,
   GATE_META,
@@ -73,9 +74,22 @@ export default function RewardDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [action, setAction] = useState<ActionModalState | null>(null);
-  const reward = REWARDS.find((item) => item.id === id) ?? REWARDS[0];
+  const reward = REWARDS.find((item) => item.id === id);
+  if (!reward) {
+    return (
+      <div className="mx-auto w-full max-w-[1360px] px-8 py-24">
+        <StateCard
+          state="not-found"
+          title="Reward not found"
+          detail="This reward may have been archived, hidden by brand scope, or removed from the fulfillment catalog."
+          actionLabel="Back to rewards"
+          onAction={() => navigate('/rewards')}
+        />
+      </div>
+    );
+  }
 
-  const context = useMemo(() => getRewardContext(reward), [reward]);
+  const context = getRewardContext(reward);
   const fulfillment = FULFILLMENT_COPY[reward.fulfillment];
   const test = providerTest(reward, context.grants);
 
