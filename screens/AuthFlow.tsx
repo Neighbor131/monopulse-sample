@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowRight, Building2, Check, KeyRound, Lock, Mail, ShieldCheck, Smartphone, UserPlus } from 'lucide-react';
 import { BRANDS, ORG } from '../data/campaigns';
+import BrandLogo from '../components/BrandLogo';
 
 type AuthMode = 'login' | 'signup' | 'invite' | 'forgot' | '2fa' | 'select-org';
 
@@ -56,10 +57,7 @@ export default function AuthFlow({ mode }: { mode: AuthMode }) {
       <div className="mx-auto flex min-h-[calc(100vh-64px)] w-full max-w-[1180px] items-center gap-8">
         <section className="hidden flex-1 lg:block">
           <div className="max-w-[520px]">
-            <div className="flex items-center gap-3">
-              <span className="h-2.5 w-2.5 rounded-full" style={{ background: 'var(--accent)' }} />
-              <span className="text-[15px] font-semibold">MonoPulse</span>
-            </div>
+            <BrandLogo size="lg" />
             <h1 className="mt-8 text-[30px] font-semibold leading-tight tracking-tight">Controlled access for gamified casino operations.</h1>
             <p className="mt-4 text-[14px] leading-relaxed text-fg-secondary">
               The backoffice needs to prove who is entering, which brands they can touch, and whether they are allowed to launch, approve or fulfil rewards.

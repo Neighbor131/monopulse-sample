@@ -18,6 +18,7 @@ import type { Icon } from 'iconsax-react';
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useReviews } from '../context/ReviewsContext';
+import BrandLogo from './BrandLogo';
 
 interface NavItem {
   label: string;
@@ -86,13 +87,7 @@ export default function Sidebar() {
     >
       {/* Brand */}
       <div className={`relative flex h-14 items-center border-b ${collapsed ? 'justify-center px-2' : 'gap-2.5 px-5'}`} style={{ borderColor: 'var(--border-subtle)' }}>
-        {!collapsed && (
-          <div className="relative flex h-6 w-6 items-center justify-center">
-            <span className="absolute h-2.5 w-2.5 rounded-full opacity-50 animate-ping" style={{ background: 'var(--accent)' }} />
-            <span className="relative h-2.5 w-2.5 rounded-full" style={{ background: 'var(--accent)' }} />
-          </div>
-        )}
-        {!collapsed && <span className="text-[15px] font-semibold tracking-tight">MonoPulse</span>}
+        <BrandLogo showName={!collapsed} size={collapsed ? 'sm' : 'md'} />
         {!collapsed && (
           <span className="ml-auto rounded px-1.5 py-0.5 text-[10px] font-medium text-fg-muted" style={{ background: 'var(--surface-3)' }}>
             BO
