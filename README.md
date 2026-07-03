@@ -47,13 +47,14 @@ node scripts/capture-demo-screenshots.mjs
 Read in this order:
 
 1. [UX/Product handoff](./UX_PRODUCT_HANDOFF.md)
-2. [Browser presentation demo](./DEMO_SCRIPT_PRESENTATION.html)
-3. [Backend contract appendix](./BACKEND_CONTRACT_APPENDIX.md)
-4. [API contract draft](./docs/API_CONTRACT.md)
-5. [Data model draft](./docs/DATA_MODEL.md)
-6. [Event contract draft](./docs/EVENT_CONTRACT.md)
-7. [Permissions and audit draft](./docs/PERMISSIONS_AND_AUDIT.md)
-8. [UX QA checklist](./QA_CHECKLIST.md)
+2. [Notion flow inventory table](./docs/NOTION_FLOW_INVENTORY.md)
+3. [Browser presentation demo](./DEMO_SCRIPT_PRESENTATION.html)
+4. [Backend contract appendix](./BACKEND_CONTRACT_APPENDIX.md)
+5. [API contract draft](./docs/API_CONTRACT.md)
+6. [Data model draft](./docs/DATA_MODEL.md)
+7. [Event contract draft](./docs/EVENT_CONTRACT.md)
+8. [Permissions and audit draft](./docs/PERMISSIONS_AND_AUDIT.md)
+9. [UX QA checklist](./QA_CHECKLIST.md)
 
 ## Key Routes
 
