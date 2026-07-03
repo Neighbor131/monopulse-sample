@@ -84,7 +84,7 @@ export default function TimelineTab({ p }: { p: Player }) {
                   <div className="flex flex-col items-center">
                     <span
                       className="mt-1 h-2.5 w-2.5 shrink-0 rounded-full ring-2"
-                      style={{ background: meta.fg, ringColor: 'var(--surface-1)' }}
+                      style={{ background: meta.fg, boxShadow: '0 0 0 2px var(--surface-1)' }}
                     />
                     {i < filtered.length - 1 && (
                       <span className="mt-1 w-px flex-1" style={{ background: 'var(--border-strong)' }} />

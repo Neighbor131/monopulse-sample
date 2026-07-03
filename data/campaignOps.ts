@@ -32,7 +32,7 @@ export interface ReportTemplateSection {
   id: string;
   label: string;
   enabled: boolean;
-  owner: 'CRM' | 'Casino' | 'Risk' | 'Finance';
+  owner: 'CRM' | 'Casino' | 'Risk' | 'Backend' | 'Finance';
 }
 
 export interface GeneratedReport {

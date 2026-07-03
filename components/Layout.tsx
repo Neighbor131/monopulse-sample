@@ -130,6 +130,10 @@ export default function Layout({ children }: { children: ReactNode }) {
       href: '/integrations/setup',
       tone: 'warning' as const,
     },
+    { id: 'analytics', type: 'Page', title: 'Analytics & performance', detail: 'ROI · retention · LTV · reward cost', href: '/analytics', tone: 'success' as const },
+    { id: 'mechanics', type: 'Page', title: 'Mechanic configuration', detail: 'Tournament · raffle · jackpot · prize drop fields', href: '/mechanics', tone: 'default' as const },
+    { id: 'notifications', type: 'Page', title: 'Notifications', detail: 'Operational inbox for approvals and incidents', href: '/notifications', tone: 'warning' as const },
+    { id: 'audit', type: 'Page', title: 'Audit log', detail: 'Unified approval, reward and event audit evidence', href: '/audit', tone: 'default' as const },
   ], [queue]);
 
   const filteredItems = searchItems.filter((item) => {
@@ -146,6 +150,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 
   return (
     <div className="flex h-screen overflow-hidden" style={{ background: 'var(--bg-base)' }}>
+      <a href="#main-content" className="skip-link">Skip to main content</a>
       <Sidebar />
       <div className="flex min-w-0 flex-1 flex-col">
         {/* Top bar */}
@@ -195,6 +200,8 @@ export default function Layout({ children }: { children: ReactNode }) {
               )}
             </button>
             <button
+              aria-label="Open notifications"
+              title="Open notifications"
               onClick={() => setPanel(panel === 'notifications' ? null : 'notifications')}
               className="relative flex h-8 w-8 items-center justify-center rounded-md transition-colors"
               style={{ background: 'var(--surface-2)' }}
@@ -213,7 +220,7 @@ export default function Layout({ children }: { children: ReactNode }) {
           </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto">{children}</main>
+        <main id="main-content" tabIndex={-1} className="flex-1 overflow-y-auto">{children}</main>
       </div>
 
       {panel && <button aria-label="Close panel" className="fixed inset-0 z-30 cursor-default" onClick={() => setPanel(null)} />}
@@ -256,7 +263,7 @@ function NotificationsPanel({ items, onOpen }: { items: { id: string; title: str
         ))}
       </div>
       <div className="border-t p-3" style={{ borderColor: 'var(--border-subtle)' }}>
-        <button onClick={() => onOpen('/dashboard')} className="w-full rounded-md px-3 py-2 text-[12.5px] font-semibold" style={{ background: 'var(--surface-3)', color: 'var(--fg-secondary)' }}>Open operations dashboard</button>
+        <button onClick={() => onOpen('/notifications')} className="w-full rounded-md px-3 py-2 text-[12.5px] font-semibold" style={{ background: 'var(--surface-3)', color: 'var(--fg-secondary)' }}>Open notification inbox</button>
       </div>
     </aside>
   );

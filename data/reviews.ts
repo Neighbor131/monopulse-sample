@@ -207,7 +207,7 @@ export const REVIEWS: Review[] = [
     id: 'rv-3009',
     campaignId: 'c-1041',
     name: 'Champions League Tournament',
-    type: 'tournament',
+    type: 'race',
     decision: 'changes_requested',
     priority: 'normal',
     submittedBy: 'Dan Whitlock',
@@ -295,7 +295,7 @@ export const REVIEWS: Review[] = [
     id: 'rv-3004',
     campaignId: 'c-1031',
     name: 'Slots Weekly Leaderboard',
-    type: 'leaderboard',
+    type: 'race',
     decision: 'approved',
     priority: 'normal',
     submittedBy: 'Priya Nair',
@@ -396,12 +396,7 @@ export function buildReviewFromDraft(draft: DraftCampaign): Review {
   const rawSpend = perPlayer > 0 ? aud.size * perPlayer : cap * 0.78;
   const projectedSpend = cap > 0 ? Math.min(cap, Math.round(rawSpend)) : Math.round(rawSpend);
 
-  const brands =
-    draft.brandScope === 'all'
-      ? BRANDS.map((b) => b.code)
-      : draft.brandScope === 'excluded'
-      ? BRANDS.map((b) => b.code).filter((c) => !draft.brands.includes(c))
-      : draft.brands;
+  const brands = draft.brandScope === 'network' ? BRANDS.map((b) => b.code) : draft.brands;
 
   const checks: CheckItem[] = [
     ...blockers.map((b) => ({ id: b.id, category: CAT[b.id] ?? 'Audit', label: b.title, detail: b.detail, severity: 'blocker' as CheckSeverity })),
@@ -433,7 +428,7 @@ export function buildReviewFromDraft(draft: DraftCampaign): Review {
     submittedAt: 'just now',
     waitingFor: blockers.length > 0 ? 'Blocked — creator action needed' : 'You · Risk & Compliance',
     slaHint: blockers.length > 0 ? 'Cannot approve until resolved' : 'SLA 4h · just submitted',
-    brandScope: draft.brandScope === 'all' ? 'all' : 'selected',
+    brandScope: draft.brandScope === 'network' ? 'all' : 'selected',
     brands,
     audienceSize: aud.size,
     excludedPlayers: aud.excluded,

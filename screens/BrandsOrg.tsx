@@ -228,7 +228,7 @@ function HealthPill({ status }: { status: BrandHealth }) {
 
 function Status({ status }: { status: OrgUser['status'] }) {
   const meta = status === 'active' ? { fg: 'var(--success)', bg: 'var(--status-live-bg)' } : status === 'pending' ? { fg: 'var(--warning)', bg: 'var(--warning-bg)' } : { fg: 'var(--danger)', bg: 'var(--danger-bg)' };
-  return <span className="inline-flex w-fit justify-self-start rounded-md px-2 py-0.5 text-[11px] font-medium capitalize" style={meta}>{status}</span>;
+  return <span className="inline-flex w-fit justify-self-start rounded-md px-2 py-0.5 text-[11px] font-medium capitalize" style={{ color: meta.fg, background: meta.bg }}>{status}</span>;
 }
 
 function DetailDrawer({ detail, onClose }: { detail: Detail; onClose: () => void }) {

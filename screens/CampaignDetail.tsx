@@ -13,6 +13,7 @@ import {
   ShieldCheck,
   Users,
 } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import StatusBadge from '../components/StatusBadge';
 import { CAMPAIGNS, fmtMoney, fmtNum, getType } from '../data/campaigns';
 import { EVENT_LOGS } from '../data/integrations';

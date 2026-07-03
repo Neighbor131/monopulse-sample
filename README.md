@@ -64,8 +64,10 @@ Read in this order:
 | `/2fa` | Two-factor checkpoint |
 | `/dashboard` | Operational dashboard |
 | `/ops` | Campaign calendar, tasks and reports |
+| `/analytics` | ROI, retention, LTV and reward-cost analytics |
 | `/` | Campaign portfolio |
 | `/campaigns/c-1042` | Campaign detail |
+| `/mechanics` | Mechanic-specific campaign configuration preview |
 | `/create` | Campaign type picker |
 | `/builder/setup` | Campaign builder |
 | `/builder/review` | Campaign review |
@@ -76,6 +78,8 @@ Read in this order:
 | `/players/PLR-88213` | Player profile |
 | `/segments` | Segment library |
 | `/monitoring` | Live ops and incidents |
+| `/notifications` | Notification inbox |
+| `/audit` | Unified audit log |
 | `/integrations` | APIs, webhooks, providers |
 | `/integrations/setup` | Integration setup wizard |
 | `/org` | Brands, users, permissions |
@@ -98,10 +102,11 @@ Covered state-preview screens: dashboard, campaign portfolio, approvals, rewards
 
 - Data is static mock data.
 - Empty, loading and error states are previewed with `?state=empty`, `?state=loading` and `?state=error` on selected screens.
+- Typecheck and production build pass.
+- Keyboard focus ring and skip link are available for baseline accessibility review.
 - Actions are UI-only and do not persist after refresh.
 - The prototype is desktop-first.
 - Production build passes.
-- Typecheck may expose generated-code cleanup items depending on local TypeScript strictness.
 
 ## What To Review
 

@@ -1,4 +1,5 @@
 import { Navigate, useParams } from 'react-router-dom';
+import type { ReactElement } from 'react';
 import ProgramBuilderLayout from '../components/loyalty/builder/ProgramBuilderLayout';
 import StepSetup from './loyaltyBuilder/StepSetup';
 import StepTiers from './loyaltyBuilder/StepTiers';
@@ -8,7 +9,7 @@ import StepReview from './loyaltyBuilder/StepReview';
 import { PROGRAM_STEPS } from '../data/programDraft';
 import type { ProgramStepId } from '../data/programDraft';
 
-const STEP_CMP: Record<ProgramStepId, JSX.Element> = {
+const STEP_CMP: Record<ProgramStepId, ReactElement> = {
   setup: <StepSetup />,
   tiers: <StepTiers />,
   benefits: <StepBenefits />,

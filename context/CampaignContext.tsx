@@ -174,7 +174,7 @@ export function CampaignProvider({ children }: { children: ReactNode }) {
     setDraft((prev) => {
       const touchesSensitive = Object.keys(patch).some(
         (k) => SENSITIVE.includes(k as keyof DraftCampaign) &&
-          (patch as Record<string, unknown>)[k] !== (prev as Record<string, unknown>)[k]
+          (patch as unknown as Record<string, unknown>)[k] !== (prev as unknown as Record<string, unknown>)[k]
       );
       const wasCommitted =
         prev.approvalState === 'submitted' ||

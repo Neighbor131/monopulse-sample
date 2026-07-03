@@ -22,6 +22,10 @@ import CampaignDetail from './screens/CampaignDetail';
 import Settings from './screens/Settings';
 import AuthFlow from './screens/AuthFlow';
 import CampaignOps from './screens/CampaignOps';
+import Analytics from './screens/Analytics';
+import Notifications from './screens/Notifications';
+import AuditLog from './screens/AuditLog';
+import MechanicConfig from './screens/MechanicConfig';
 
 export default function AppRoutes() {
   return (
@@ -34,6 +38,8 @@ export default function AppRoutes() {
       <Route path="/select-org" element={<AuthFlow mode="select-org" />} />
       <Route path="/" element={<Layout><CampaignsList /></Layout>} />
       <Route path="/ops" element={<Layout><CampaignOps /></Layout>} />
+      <Route path="/analytics" element={<Layout><Analytics /></Layout>} />
+      <Route path="/mechanics" element={<Layout><MechanicConfig /></Layout>} />
       <Route path="/campaigns/:id" element={<Layout><CampaignDetail /></Layout>} />
       <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} />
       <Route path="/create" element={<Layout><CampaignTypePicker /></Layout>} />
@@ -52,6 +58,8 @@ export default function AppRoutes() {
       <Route path="/safety" element={<Layout><SafetyOps /></Layout>} />
       <Route path="/approvals" element={<Layout><ApprovalInbox /></Layout>} />
       <Route path="/approvals/:id" element={<Layout><ApprovalDetail /></Layout>} />
+      <Route path="/notifications" element={<Layout><Notifications /></Layout>} />
+      <Route path="/audit" element={<Layout><AuditLog /></Layout>} />
       <Route path="/settings" element={<Layout><Settings /></Layout>} />
     </Routes>
   );

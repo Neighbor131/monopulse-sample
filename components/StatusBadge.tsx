@@ -23,7 +23,7 @@ const STATUS_STYLE: Record<CampaignStatus, { fg: string; bg: string; pulse?: boo
   expired: { fg: 'var(--status-completed)', bg: 'var(--status-completed-bg)' },
 };
 
-const FALLBACK = { fg: 'var(--status-draft)', bg: 'var(--status-draft-bg)' };
+const FALLBACK: { fg: string; bg: string; pulse?: boolean } = { fg: 'var(--status-draft)', bg: 'var(--status-draft-bg)' };
 
 export default function StatusBadge({ status }: { status: CampaignStatus }) {
   const s = STATUS_STYLE[status] ?? FALLBACK;

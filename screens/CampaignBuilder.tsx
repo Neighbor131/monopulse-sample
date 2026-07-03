@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import type { ReactElement } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import BuilderLayout from '../components/builder/BuilderLayout';
 import { BUILDER_STEPS } from '../data/validation';
@@ -21,7 +22,7 @@ export default function CampaignBuilder() {
 
   const stepId = (BUILDER_STEPS.find((s) => s.id === step)?.id ?? 'setup') as StepId;
 
-  const content: Record<StepId, JSX.Element> = {
+  const content: Record<StepId, ReactElement> = {
     setup: <StepSetup />,
     audience: <StepAudience />,
     rewards: <StepRewards />,

@@ -46,7 +46,7 @@ const EVENT_ROWS = [
   ['jackpot.win', 'Amount, jackpot ID, player, currency', 'Manual payout approval'],
 ];
 
-const CERT_ROWS = [
+const CERT_ROWS: { label: string; status: Status; detail: string }[] = [
   { label: 'Authentication', status: 'ready', detail: 'Sandbox key accepted with scoped access.' },
   { label: 'Webhook signature', status: 'blocked', detail: 'Latest HMAC test failed on timestamp tolerance.' },
   { label: 'Event schema', status: 'ready', detail: 'Core player, wallet and bet events validated.' },
