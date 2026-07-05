@@ -70,54 +70,52 @@ export default function StepLogic() {
 
       <LogicToolbar mode={mode} onChange={setMode} />
 
-      <div className="grid grid-cols-[minmax(0,1fr)_320px] gap-5">
-        <div className="flex min-w-0 flex-col gap-5">
-          <Section
-            icon={GitBranch}
-            title="WHEN / IF / THEN rules"
-            desc="Rules are evaluated only after Audience Scope says the player is eligible."
-            aside={<span className="rounded-md px-2 py-1 text-[11px] font-medium" style={{ background: 'var(--surface-3)', color: 'var(--fg-secondary)' }}>ALL · ANY · NONE</span>}
-          >
-            <div className="flex flex-col gap-3">
-              {draft.rules.length === 0 && (
-                <div className="flex flex-col items-center gap-2 rounded-lg border border-dashed py-8 text-center" style={{ borderColor: 'var(--border-strong)' }}>
-                  <GitBranch size={20} className="text-fg-muted" strokeWidth={1.75} />
-                  <p className="text-[13px] font-medium text-fg-primary">No mission rules yet</p>
-                  <p className="max-w-sm text-[12px] text-fg-muted">Add a rule to define what a player must do to earn progress or complete the mission.</p>
-                </div>
-              )}
-
-              {draft.rules.map((rule, i) => (
-                <RuleCard
-                  key={rule.id}
-                  index={i}
-                  rule={rule}
-                  onPatch={(patch) => patchRule(rule.id, patch)}
-                  onRemove={() => removeRule(rule.id)}
-                  onAddCondition={() => addCondition(rule.id)}
-                  onPatchCondition={(cid, patch) => patchCondition(rule.id, cid, patch)}
-                  onRemoveCondition={(cid) => removeCondition(rule.id, cid)}
-                />
-              ))}
-
-              <button
-                onClick={addRule}
-                className="flex items-center justify-center gap-1.5 rounded-lg border border-dashed py-2.5 text-[12.5px] font-medium text-fg-secondary transition-colors hover:text-fg-primary"
-                style={{ borderColor: 'var(--border-strong)' }}
-              >
-                <Plus size={15} strokeWidth={2.25} /> Add mission rule
-              </button>
+      <Section
+        icon={GitBranch}
+        title="WHEN / IF / THEN rules"
+        desc="Rules are evaluated only after Audience Scope says the player is eligible."
+        aside={<span className="rounded-md px-2 py-1 text-[11px] font-medium" style={{ background: 'var(--surface-3)', color: 'var(--fg-secondary)' }}>ALL · ANY · NONE</span>}
+      >
+        <div className="flex flex-col gap-3">
+          {draft.rules.length === 0 && (
+            <div className="flex flex-col items-center gap-2 rounded-lg border border-dashed py-8 text-center" style={{ borderColor: 'var(--border-strong)' }}>
+              <GitBranch size={20} className="text-fg-muted" strokeWidth={1.75} />
+              <p className="text-[13px] font-medium text-fg-primary">No mission rules yet</p>
+              <p className="max-w-sm text-[12px] text-fg-muted">Add a rule to define what a player must do to earn progress or complete the mission.</p>
             </div>
-          </Section>
+          )}
 
-          <RuleTestPanel />
+          {draft.rules.map((rule, i) => (
+            <RuleCard
+              key={rule.id}
+              index={i}
+              rule={rule}
+              onPatch={(patch) => patchRule(rule.id, patch)}
+              onRemove={() => removeRule(rule.id)}
+              onAddCondition={() => addCondition(rule.id)}
+              onPatchCondition={(cid, patch) => patchCondition(rule.id, cid, patch)}
+              onRemoveCondition={(cid) => removeCondition(rule.id, cid)}
+            />
+          ))}
+
+          <button
+            onClick={addRule}
+            className="flex items-center justify-center gap-1.5 rounded-lg border border-dashed py-2.5 text-[12.5px] font-medium text-fg-secondary transition-colors hover:text-fg-primary"
+            style={{ borderColor: 'var(--border-strong)' }}
+          >
+            <Plus size={15} strokeWidth={2.25} /> Add mission rule
+          </button>
         </div>
+      </Section>
 
-        <aside className="sticky top-24 flex h-fit flex-col gap-4">
-          <LogicRail mode={mode} />
-          <ModuleSections step="logic" />
-        </aside>
+      <div className="grid grid-cols-2 gap-4">
+        <EvaluationPreview mode={mode} />
+        <HardGatePanel />
       </div>
+
+      <ModuleSections step="logic" />
+
+      <RuleTestPanel />
     </div>
   );
 }
@@ -125,31 +123,31 @@ export default function StepLogic() {
 function LogicToolbar({ mode, onChange }: { mode: string; onChange: (mode: string) => void }) {
   return (
     <div className="rounded-xl border px-4 py-3" style={{ borderColor: 'var(--border-subtle)', background: 'var(--surface-1)' }}>
-      <div className="grid grid-cols-[minmax(180px,240px)_1fr_auto] items-center gap-4">
+      <div className="flex items-start justify-between gap-4">
         <div className="flex items-start gap-2.5">
           <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md" style={{ background: 'var(--surface-3)', color: 'var(--accent)' }}>
             <Workflow size={16} strokeWidth={1.9} />
           </span>
           <div>
             <div className="text-[13.5px] font-semibold text-fg-primary">Execution mode</div>
-            <p className="mt-0.5 text-[12px] leading-5 text-fg-secondary">How event rules combine.</p>
+            <p className="mt-0.5 text-[12px] leading-5 text-fg-secondary">Choose how event triggers combine before IF conditions are evaluated.</p>
           </div>
-        </div>
-        <div className="grid grid-cols-4 gap-2">
-          {MODES.map((option) => (
-            <button
-              key={option}
-              onClick={() => onChange(option)}
-              className="min-h-9 rounded-md border px-2.5 text-center text-[12px] font-semibold transition-colors"
-              style={mode === option ? { borderColor: 'var(--accent-border)', background: 'var(--accent-bg)', color: 'var(--fg-primary)' } : { borderColor: 'var(--border-strong)', background: 'var(--surface-2)', color: 'var(--fg-secondary)' }}
-            >
-              {option}
-            </button>
-          ))}
         </div>
         <span className="rounded-md px-2 py-1 text-[11px] font-semibold whitespace-nowrap" style={{ background: 'var(--accent-bg)', color: 'var(--accent)' }}>
           Tech doc v1.0
         </span>
+      </div>
+      <div className="mt-3 grid grid-cols-4 gap-2">
+        {MODES.map((option) => (
+          <button
+            key={option}
+            onClick={() => onChange(option)}
+            className="min-h-9 rounded-md border px-2.5 text-center text-[12px] font-semibold transition-colors"
+            style={mode === option ? { borderColor: 'var(--accent-border)', background: 'var(--accent-bg)', color: 'var(--fg-primary)' } : { borderColor: 'var(--border-strong)', background: 'var(--surface-2)', color: 'var(--fg-secondary)' }}
+          >
+            {option}
+          </button>
+        ))}
       </div>
     </div>
   );
@@ -287,35 +285,38 @@ function MiniInput({ value, onChange, placeholder, prefix, suffix }: { value: st
   );
 }
 
-function LogicRail({ mode }: { mode: string }) {
+function EvaluationPreview({ mode }: { mode: string }) {
   const { draft } = useCampaign();
   const live = testRules(draft);
   const validRules = draft.rules.filter((r) => ruleErrors(r).length === 0).length;
   return (
-    <>
-      <div className="rounded-xl border p-4" style={{ borderColor: 'var(--border-subtle)', background: 'var(--surface-1)' }}>
-        <div className="text-[10.5px] font-semibold uppercase tracking-wider text-fg-muted">Evaluation preview</div>
-        <div className="mt-3 flex flex-col gap-3">
-          <RailMetric label="Mode" value={mode} />
-          <RailMetric label="Valid rules" value={`${validRules}/${draft.rules.length}`} />
-          <RailMetric label="Matched events" value={fmtNum(live.matchedEvents)} mono />
-          <RailMetric label="Matched players" value={fmtNum(live.matchedPlayers)} mono />
-        </div>
+    <div className="rounded-xl border p-4" style={{ borderColor: 'var(--border-subtle)', background: 'var(--surface-1)' }}>
+      <div className="text-[10.5px] font-semibold uppercase tracking-wider text-fg-muted">Evaluation preview</div>
+      <div className="mt-3 grid grid-cols-2 gap-3">
+        <RailMetric label="Mode" value={mode} />
+        <RailMetric label="Valid rules" value={`${validRules}/${draft.rules.length}`} />
+        <RailMetric label="Matched events" value={fmtNum(live.matchedEvents)} mono />
+        <RailMetric label="Matched players" value={fmtNum(live.matchedPlayers)} mono />
       </div>
-      <div className="rounded-xl border p-4" style={{ borderColor: 'var(--border-subtle)', background: 'var(--surface-1)' }}>
-        <div className="flex items-center gap-1.5 text-[10.5px] font-semibold uppercase tracking-wider text-fg-muted">
-          <ShieldCheck size={13} strokeWidth={2} /> Invisible hard gates
-        </div>
-        <div className="mt-3 flex flex-col gap-2">
-          {HARD_GATES.map((gate) => (
-            <div key={gate} className="flex items-center gap-2 text-[12px] text-fg-secondary">
-              <Check size={13} strokeWidth={2.5} style={{ color: 'var(--success)' }} />
-              {gate}
-            </div>
-          ))}
-        </div>
+    </div>
+  );
+}
+
+function HardGatePanel() {
+  return (
+    <div className="rounded-xl border p-4" style={{ borderColor: 'var(--border-subtle)', background: 'var(--surface-1)' }}>
+      <div className="flex items-center gap-1.5 text-[10.5px] font-semibold uppercase tracking-wider text-fg-muted">
+        <ShieldCheck size={13} strokeWidth={2} /> Invisible hard gates
       </div>
-    </>
+      <div className="mt-3 grid grid-cols-2 gap-2">
+        {HARD_GATES.map((gate) => (
+          <div key={gate} className="flex items-center gap-2 text-[12px] text-fg-secondary">
+            <Check size={13} strokeWidth={2.5} style={{ color: 'var(--success)' }} />
+            {gate}
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }
 
