@@ -200,16 +200,43 @@ export default function Dashboard() {
 function MoneyKpiCard({ kpi, onOpen }: { kpi: MoneyKpi; onOpen: () => void }) {
   const Icon = KPI_ICON[kpi.id] ?? MoneyTick;
   return (
-    <button onClick={onOpen} className="rounded-xl border px-4 py-3.5 text-left hover:bg-[var(--surface-2)]" style={{ borderColor: 'var(--border-subtle)', background: 'var(--surface-1)' }}>
+    <button onClick={onOpen} className="min-h-[142px] rounded-xl border px-4 py-3.5 text-left hover:bg-[var(--surface-2)]" style={{ borderColor: 'var(--border-subtle)', background: 'var(--surface-1)' }}>
       <div className="flex items-center gap-1.5 text-[10.5px] font-semibold uppercase tracking-wider text-fg-muted">
         <span className="flex h-5 w-5 items-center justify-center rounded" style={{ background: 'var(--surface-3)' }}>
           <Icon size={12} variant="Linear" color={toneColor(kpi.tone)} />
         </span>
         {kpi.label}
       </div>
-      <div className="mt-2 font-mono text-[22px] font-semibold leading-none tabular-nums text-fg-primary">{kpi.value}</div>
+      <div className="mt-3 flex items-end justify-between gap-3">
+        <div className="font-mono text-[22px] font-semibold leading-none tabular-nums text-fg-primary">{kpi.value}</div>
+        <Sparkline values={kpi.trend} tone={kpi.tone} />
+      </div>
       <div className="mt-1 line-clamp-2 text-[11.5px]" style={{ color: toneColor(kpi.tone) }}>{kpi.detail}</div>
     </button>
+  );
+}
+
+function Sparkline({ values, tone }: { values: number[]; tone: MoneyKpi['tone'] }) {
+  const width = 92;
+  const height = 42;
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  const range = Math.max(1, max - min);
+  const points = values.map((value, index) => {
+    const x = (index / Math.max(1, values.length - 1)) * width;
+    const y = height - 5 - ((value - min) / range) * (height - 10);
+    return { x, y };
+  });
+  const line = points.map((point) => `${point.x.toFixed(1)},${point.y.toFixed(1)}`).join(' ');
+  const area = `0,${height} ${line} ${width},${height}`;
+  const color = toneColor(tone);
+
+  return (
+    <svg className="h-[42px] w-[92px] shrink-0" viewBox={`0 0 ${width} ${height}`} aria-hidden="true">
+      <polyline points={area} fill={color} opacity="0.12" />
+      <polyline points={line} fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx={points[points.length - 1].x} cy={points[points.length - 1].y} r="2.5" fill={color} />
+    </svg>
   );
 }
 
