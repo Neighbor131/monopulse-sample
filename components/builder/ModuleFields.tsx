@@ -60,15 +60,15 @@ function ModuleSectionBlock({ section, subtype }: { section: ModuleSection; subt
       desc={section.desc}
       aside={
         <span className="inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 text-[10.5px] font-semibold uppercase tracking-wide" style={{ background: 'var(--accent-bg)', color: 'var(--accent)' }}>
-          Module{subName ? <span style={{ opacity: 0.7 }}>· {subName}</span> : null}
+          {subName ?? 'Module'}
         </span>
       }
     >
-      <div className="grid grid-cols-2 gap-x-4 gap-y-4">
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] gap-x-4 gap-y-4">
         {shownFields.map((f) => {
           const full = f.full || ['tiers', 'matrix', 'info', 'hash', 'toggle'].includes(f.type);
           return (
-            <div key={f.key} className={full ? 'col-span-2' : ''}>
+            <div key={f.key} className={full ? 'col-span-full' : ''}>
               <FieldRenderer
                 field={f}
                 strVal={strVal}

@@ -68,28 +68,10 @@ export default function StepLogic() {
         </p>
       </div>
 
-      <div className="grid grid-cols-[1fr_300px] gap-5">
-        <div className="flex min-w-0 flex-col gap-5">
-          <Section
-            icon={Workflow}
-            title="Mission execution mode"
-            desc="Choose how multiple event rules combine for this campaign."
-            aside={<span className="rounded-md px-2 py-1 text-[11px] font-semibold" style={{ background: 'var(--accent-bg)', color: 'var(--accent)' }}>Tech doc v1.0</span>}
-          >
-            <div className="grid grid-cols-4 gap-2">
-              {MODES.map((option) => (
-                <button
-                  key={option}
-                  onClick={() => setMode(option)}
-                  className="rounded-lg border px-3 py-2.5 text-left text-[12.5px] font-semibold transition-colors"
-                  style={mode === option ? { borderColor: 'var(--accent-border)', background: 'var(--accent-bg)', color: 'var(--fg-primary)' } : { borderColor: 'var(--border-strong)', background: 'var(--surface-2)', color: 'var(--fg-secondary)' }}
-                >
-                  {option}
-                </button>
-              ))}
-            </div>
-          </Section>
+      <LogicToolbar mode={mode} onChange={setMode} />
 
+      <div className="grid grid-cols-[minmax(0,1fr)_320px] gap-5">
+        <div className="flex min-w-0 flex-col gap-5">
           <Section
             icon={GitBranch}
             title="WHEN / IF / THEN rules"
@@ -128,14 +110,46 @@ export default function StepLogic() {
             </div>
           </Section>
 
-          <ModuleSections step="logic" />
-
           <RuleTestPanel />
         </div>
 
-        <aside className="flex flex-col gap-4">
+        <aside className="sticky top-24 flex h-fit flex-col gap-4">
           <LogicRail mode={mode} />
+          <ModuleSections step="logic" />
         </aside>
+      </div>
+    </div>
+  );
+}
+
+function LogicToolbar({ mode, onChange }: { mode: string; onChange: (mode: string) => void }) {
+  return (
+    <div className="rounded-xl border px-4 py-3" style={{ borderColor: 'var(--border-subtle)', background: 'var(--surface-1)' }}>
+      <div className="grid grid-cols-[minmax(180px,240px)_1fr_auto] items-center gap-4">
+        <div className="flex items-start gap-2.5">
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md" style={{ background: 'var(--surface-3)', color: 'var(--accent)' }}>
+            <Workflow size={16} strokeWidth={1.9} />
+          </span>
+          <div>
+            <div className="text-[13.5px] font-semibold text-fg-primary">Execution mode</div>
+            <p className="mt-0.5 text-[12px] leading-5 text-fg-secondary">How event rules combine.</p>
+          </div>
+        </div>
+        <div className="grid grid-cols-4 gap-2">
+          {MODES.map((option) => (
+            <button
+              key={option}
+              onClick={() => onChange(option)}
+              className="min-h-9 rounded-md border px-2.5 text-center text-[12px] font-semibold transition-colors"
+              style={mode === option ? { borderColor: 'var(--accent-border)', background: 'var(--accent-bg)', color: 'var(--fg-primary)' } : { borderColor: 'var(--border-strong)', background: 'var(--surface-2)', color: 'var(--fg-secondary)' }}
+            >
+              {option}
+            </button>
+          ))}
+        </div>
+        <span className="rounded-md px-2 py-1 text-[11px] font-semibold whitespace-nowrap" style={{ background: 'var(--accent-bg)', color: 'var(--accent)' }}>
+          Tech doc v1.0
+        </span>
       </div>
     </div>
   );
