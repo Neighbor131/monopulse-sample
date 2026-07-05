@@ -2,7 +2,7 @@ import type { DraftCampaign, Rule, UserRole } from '../context/CampaignContext';
 
 import { TIER_NAMES } from './loyalty';
 
-export type StepId = 'setup' | 'audience' | 'rewards' | 'budget' | 'review';
+export type StepId = 'setup' | 'audience' | 'logic' | 'rewards' | 'budget' | 'review';
 export type FieldStatus = 'empty' | 'partial' | 'complete';
 
 export interface StepMeta {
@@ -13,9 +13,10 @@ export interface StepMeta {
 
 export const BUILDER_STEPS: StepMeta[] = [
   { id: 'setup', label: 'Basic setup + Brand scope', short: 'Setup' },
-  { id: 'audience', label: 'Audience + Rules', short: 'Audience' },
-  { id: 'rewards', label: 'Rewards + Fulfillment', short: 'Rewards' },
-  { id: 'budget', label: 'Budget + Safety', short: 'Budget' },
+  { id: 'audience', label: 'Audience Scope', short: 'Audience' },
+  { id: 'logic', label: 'Mission Logic', short: 'Logic' },
+  { id: 'rewards', label: 'Outcome + Rewards', short: 'Outcome' },
+  { id: 'budget', label: 'Budget + Safety', short: 'Safety' },
   { id: 'review', label: 'Review + Launch', short: 'Review' },
 ];
 
@@ -206,8 +207,11 @@ export function stepStatus(d: DraftCampaign): Record<StepId, FieldStatus> {
   const setupComplete = !!(d.name && d.startDate && d.endDate && brandsOk);
   const setupPartial = !!(d.name || d.brands.length > 0 || d.brandScope === 'network');
 
-  const audienceComplete = !!((d.segments.length > 0 || d.tiers.length > 0 || d.vipOnly) && rulesValid(d));
+  const audienceComplete = !!(d.segments.length > 0 || d.tiers.length > 0 || d.vipOnly);
   const audiencePartial = !!(d.segments.length > 0 || d.tiers.length > 0 || d.rules.length > 0);
+
+  const logicComplete = rulesValid(d);
+  const logicPartial = d.rules.length > 0;
 
   const rewardsComplete = !!(d.rewardType && d.rewardAmount && d.fulfillmentMethod);
   const rewardsPartial = !!(d.rewardType || d.fulfillmentMethod);
@@ -218,6 +222,7 @@ export function stepStatus(d: DraftCampaign): Record<StepId, FieldStatus> {
   return {
     setup: setupComplete ? 'complete' : setupPartial ? 'partial' : 'empty',
     audience: audienceComplete ? 'complete' : audiencePartial ? 'partial' : 'empty',
+    logic: logicComplete ? 'complete' : logicPartial ? 'partial' : 'empty',
     rewards: rewardsComplete ? 'complete' : rewardsPartial ? 'partial' : 'empty',
     budget: budgetComplete ? 'complete' : budgetPartial ? 'partial' : 'empty',
     review: 'empty',
@@ -262,9 +267,9 @@ export function getSafetyChecks(d: DraftCampaign): SafetyCheck[] {
 
   // 1. Validation blockers
   if (!rulesValid(d))
-    out.push({ id: 'val-rules', category: 'validation', severity: 'blocker', step: 'audience', label: 'Rule set incomplete or invalid', detail: 'At least one valid WHEN / IF / THEN rule is required before this campaign can run.' });
+    out.push({ id: 'val-rules', category: 'validation', severity: 'blocker', step: 'logic', label: 'Rule set incomplete or invalid', detail: 'At least one valid WHEN / IF / THEN rule is required before this campaign can run.' });
   else
-    out.push({ id: 'val-rules', category: 'validation', severity: 'pass', step: 'audience', label: 'Rules validated', detail: `${d.rules.length} rule${d.rules.length === 1 ? '' : 's'} pass live validation.` });
+    out.push({ id: 'val-rules', category: 'validation', severity: 'pass', step: 'logic', label: 'Rules validated', detail: `${d.rules.length} rule${d.rules.length === 1 ? '' : 's'} pass live validation.` });
 
   if (!d.fulfillmentMethod)
     out.push({ id: 'val-fulfill', category: 'validation', severity: 'blocker', step: 'rewards', label: 'No fulfillment method selected', detail: 'A reward fulfillment method is required before rewards can be granted.' });

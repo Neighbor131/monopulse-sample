@@ -73,7 +73,7 @@ export default function StepReview() {
         <div className="flex items-start gap-2.5 rounded-lg border px-4 py-2.5" style={{ borderColor: 'var(--border-subtle)', background: 'var(--surface-2)' }}>
           <RotateCcw size={14} className="mt-0.5 shrink-0 text-fg-muted" strokeWidth={2} />
           <span className="text-[12px] leading-relaxed text-fg-secondary">
-            Editing audience, rules, rewards, fulfillment, budget or compliance after approval will reset it back to draft and require re-submission.
+            Editing audience scope, mission logic, rewards, fulfillment, budget or compliance after approval will reset it back to draft and require re-submission.
           </span>
         </div>
       )}
@@ -92,14 +92,20 @@ export default function StepReview() {
           <Kv k="Brands" v={draft.brandScope === 'network' && draft.network.brandIdsMode === 'all' ? BRANDS.map((b) => b.code).join(' · ') : draft.brands.join(' · ') || '—'} mono />
         </SummaryCard>
 
-        <SummaryCard title="Audience & rules" step="audience" onEdit={navigate}>
+        <SummaryCard title="Audience Scope" step="audience" onEdit={navigate}>
           <Kv k="Reach" v={`${fmtNum(aud.size)} players`} mono />
           <Kv k="Excluded" v={`${fmtNum(aud.excluded)} players`} mono />
-          <Kv k="Rules" v={`${draft.rules.filter((r) => r.when && r.thenAction).length} configured`} />
+          <Kv k="Segments" v={draft.segments.join(', ') || 'All eligible players'} />
           <Kv k="Tiers" v={draft.tiers.join(', ') || 'All tiers'} />
         </SummaryCard>
 
-        <SummaryCard title="Reward & fulfillment" step="rewards" onEdit={navigate}>
+        <SummaryCard title="Mission Logic" step="logic" onEdit={navigate}>
+          <Kv k="Rules" v={`${draft.rules.filter((r) => r.when && r.thenAction).length} configured`} />
+          <Kv k="Condition groups" v={`${draft.rules.reduce((sum, r) => sum + r.conditions.length, 0)} conditions`} />
+          <Kv k="Evaluation" v="WHEN / IF / THEN" />
+        </SummaryCard>
+
+        <SummaryCard title="Outcome & Rewards" step="rewards" onEdit={navigate}>
           <Kv k="Reward" v={draft.rewardType && draft.rewardAmount ? `${fmtMoney(Number(draft.rewardAmount) || 0, draft.currency)} ${draft.rewardType}` : 'Not set'} />
           <Kv k="Per player" v={draft.maxPerPlayer ? fmtMoney(Number(draft.maxPerPlayer) || 0, draft.currency) : '—'} mono />
           <Kv k="Fulfillment" v={fm?.name ?? 'Not set'} />
@@ -167,7 +173,7 @@ function ApprovalPanel({
   // Blocked — cannot proceed
   if (blockers > 0) {
     return (
-      <Panel tone="danger" icon={Ban} title="Cannot submit — launch blocked" desc={`${blockers} ${blockers === 1 ? 'blocker' : 'blockers'} must be resolved in the Budget & Compliance step before this campaign can be submitted or launched.`}>
+      <Panel tone="danger" icon={Ban} title="Cannot submit — launch blocked" desc={`${blockers} ${blockers === 1 ? 'blocker' : 'blockers'} must be resolved before this campaign can be submitted or launched.`}>
         <button onClick={onFixBlockers} className="rounded-md px-4 py-2 text-[13px] font-semibold" style={{ background: 'var(--danger)', color: '#fff' }}>
           Resolve blockers
         </button>

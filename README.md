@@ -69,7 +69,11 @@ Read in this order:
 | `/campaigns/c-1042` | Campaign detail |
 | `/mechanics` | Mechanic-specific campaign configuration preview |
 | `/create` | Campaign type picker |
-| `/builder/setup` | Campaign builder |
+| `/builder/setup` | Campaign builder setup |
+| `/builder/audience` | Audience scope and eligibility gates |
+| `/builder/logic` | Mission logic rule builder |
+| `/builder/rewards` | Outcome and reward fulfillment |
+| `/builder/budget` | Budget and safety controls |
 | `/builder/review` | Campaign review |
 | `/approvals` | Approval inbox |
 | `/rewards` | Reward catalog |

@@ -5,9 +5,10 @@ import { getType } from '../data/campaigns';
 
 const STEPS = [
   { id: 'setup', label: 'Basic setup + Brand scope' },
-  { id: 'audience', label: 'Audience + Rules' },
-  { id: 'rewards', label: 'Rewards + Fulfillment' },
-  { id: 'budget', label: 'Budget + Compliance' },
+  { id: 'audience', label: 'Audience Scope' },
+  { id: 'logic', label: 'Mission Logic' },
+  { id: 'rewards', label: 'Outcome + Rewards' },
+  { id: 'budget', label: 'Budget + Safety' },
   { id: 'review', label: 'Review + Launch' },
 ];
 

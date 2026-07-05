@@ -7,7 +7,7 @@ import {
 import type { CampaignTypeId } from './campaigns';
 
 // step ids mirror validation.StepId; kept local to avoid an import cycle
-export type ModuleStep = 'setup' | 'audience' | 'rewards' | 'budget' | 'review';
+export type ModuleStep = 'setup' | 'audience' | 'logic' | 'rewards' | 'budget' | 'review';
 
 export type ModuleFieldType =
   | 'text' | 'number' | 'select' | 'segmented' | 'toggle'
@@ -69,7 +69,7 @@ export const MODULE_SPECS: Record<CampaignTypeId, ModuleSection[]> = {
   // ── Missions & Quests ──
   mission: [
     {
-      id: 'mission-structure', step: 'audience', title: 'Mission structure', icon: ListChecks,
+      id: 'mission-structure', step: 'logic', title: 'Mission structure', icon: ListChecks,
       desc: 'Define what a player must complete to clear this mission.',
       fields: [
         { key: 'objectiveCount', label: 'Number of objectives', type: 'number', placeholder: 'e.g. 3', default: '3' },
@@ -81,7 +81,7 @@ export const MODULE_SPECS: Record<CampaignTypeId, ModuleSection[]> = {
       ],
     },
     {
-      id: 'mission-competitive', step: 'audience', title: 'Competitive scoring', icon: Trophy,
+      id: 'mission-competitive', step: 'logic', title: 'Competitive scoring', icon: Trophy,
       desc: 'This mission is ranked against other players.', subtypes: ['race_mission'],
       fields: [
         { key: 'raceScoring', label: 'Rank by', type: 'select', options: ['Fastest to complete', 'Most objectives cleared', 'Highest turnover'], default: 'Fastest to complete' },
@@ -201,7 +201,7 @@ export const MODULE_SPECS: Record<CampaignTypeId, ModuleSection[]> = {
   // ── Raffles ──
   raffle: [
     {
-      id: 'raffle-tickets', step: 'audience', title: 'Ticket earning', icon: Ticket,
+      id: 'raffle-tickets', step: 'logic', title: 'Ticket earning', icon: Ticket,
       desc: 'How players accrue tickets. The qualifying events are defined in the rule builder above.',
       fields: [
         { key: 'ticketBaseline', label: 'Tickets per qualifying action', type: 'number', placeholder: 'e.g. 1', default: '1' },
@@ -344,7 +344,7 @@ export const MODULE_SPECS: Record<CampaignTypeId, ModuleSection[]> = {
   // ── Velocity Milestones ──
   velocity: [
     {
-      id: 'velocity-counter', step: 'audience', title: 'Counter metric', icon: Gauge,
+      id: 'velocity-counter', step: 'logic', title: 'Counter metric', icon: Gauge,
       desc: 'What is counted and how often a milestone fires.',
       fields: [
         { key: 'counter', label: 'Counter metric', type: 'select', options: ['Bets placed', 'Turnover', 'Wins', 'Deposits', 'Rounds played'], default: 'Bets placed' },
@@ -389,7 +389,7 @@ export const MODULE_SPECS: Record<CampaignTypeId, ModuleSection[]> = {
   // ── Achievements ──
   achievement: [
     {
-      id: 'achievement-set', step: 'audience', title: 'Achievement set', icon: BadgeCheck,
+      id: 'achievement-set', step: 'logic', title: 'Achievement set', icon: BadgeCheck,
       desc: 'The badges players can unlock in this collection.',
       fields: [
         {

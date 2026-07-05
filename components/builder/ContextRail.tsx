@@ -42,7 +42,7 @@ export default function ContextRail() {
   const blockers = getBlockers(draft);
   const warnings = getWarnings(draft);
   const subtype = getSubtype(draft.type, draft.subtype);
-  const moduleSteps: ModuleStep[] = ['setup', 'audience', 'rewards', 'budget'];
+  const moduleSteps: ModuleStep[] = ['setup', 'logic', 'rewards', 'budget'];
   const mechanicSections = moduleSteps.flatMap((step) =>
     moduleSectionsForStep(draft.type, step, draft.subtype).map((section) => ({ step, section }))
   );
@@ -77,7 +77,7 @@ export default function ContextRail() {
   const rows: Row[] = [
     {
       icon: Users,
-      label: 'Who it targets',
+      label: 'Audience scope',
       value: aud.size > 0 ? `${fmtNum(aud.size)} players` : 'Audience not set',
       sub: aud.excluded > 0 ? `${fmtNum(aud.excluded)} excluded` : undefined,
       dot: aud.size > 0 ? 'set' : 'empty',
@@ -90,13 +90,13 @@ export default function ContextRail() {
     },
     {
       icon: Target,
-      label: 'What players do',
+      label: 'Mission logic',
       value: actionValue,
       dot: validRuleCount > 0 ? 'set' : 'empty',
     },
     {
       icon: Gift,
-      label: 'Reward granted',
+      label: 'Outcome granted',
       value: rewardValue,
       sub: draft.maxPerPlayer ? `max ${fmtMoney(Number(draft.maxPerPlayer) || 0, draft.currency)}/player` : undefined,
       dot: draft.rewardType && draft.rewardAmount ? 'set' : 'empty',

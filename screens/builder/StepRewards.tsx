@@ -38,11 +38,11 @@ export default function StepRewards() {
   return (
     <div className="flex flex-col gap-5">
       <div>
-        <h2 className="text-[16px] font-semibold tracking-tight">Rewards & fulfillment</h2>
-        <p className="mt-1 text-[13px] text-fg-secondary">Define the reward, then choose how it's actually granted to the player.</p>
+        <h2 className="text-[16px] font-semibold tracking-tight">Outcome & Rewards</h2>
+        <p className="mt-1 text-[13px] text-fg-secondary">Define what happens after Mission Logic completes, then choose how the reward is granted to the player.</p>
       </div>
 
-      <Section icon={Gift} title="Reward">
+      <Section icon={Gift} title="Completion outcome" desc="This is the THEN result after eligible players satisfy the mission logic.">
         <div className="grid grid-cols-2 gap-4">
           <Field label="Reward type" required>
             <Select value={draft.rewardType} onChange={(v) => update({ rewardType: v })} options={REWARD_TYPES} placeholder="Choose reward…" />

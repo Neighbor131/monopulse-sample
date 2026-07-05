@@ -7,6 +7,7 @@ import type { StepId } from '../data/validation';
 import { useCampaign } from '../context/CampaignContext';
 import StepSetup from './builder/StepSetup';
 import StepAudience from './builder/StepAudience';
+import StepLogic from './builder/StepLogic';
 import StepRewards from './builder/StepRewards';
 import StepBudget from './builder/StepBudget';
 import StepReview from './builder/StepReview';
@@ -25,6 +26,7 @@ export default function CampaignBuilder() {
   const content: Record<StepId, ReactElement> = {
     setup: <StepSetup />,
     audience: <StepAudience />,
+    logic: <StepLogic />,
     rewards: <StepRewards />,
     budget: <StepBudget />,
     review: <StepReview />,
