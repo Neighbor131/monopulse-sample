@@ -1,12 +1,22 @@
 import { useState } from 'react';
-import { Users, UserMinus, SlidersHorizontal, Database, Building2, Lock, CheckCircle2 } from 'lucide-react';
+import { Users, UserMinus, SlidersHorizontal, Database, Lock, CheckCircle2, Search, Sparkles } from 'lucide-react';
 import { Section, Field, TagSelect, Toggle } from '../../components/builder/form';
 import { useCampaign } from '../../context/CampaignContext';
 import { TIERS, COUNTRIES, estimateAudience } from '../../data/validation';
 import { fmtNum } from '../../data/campaigns';
 
-const PLATFORM_SEGMENTS = ['New depositors', 'Reactivated', 'Dormant 30d', 'KYC verified', 'Sports bettors'];
-const MONOPULSE_SEGMENTS = ['High rollers', 'Weekend players', 'Sports crossovers', 'VIP watchlist', 'Churn risk'];
+const SEGMENT_LIBRARY = [
+  { name: 'New depositors', source: 'Platform', desc: 'First deposit completed in the selected campaign window.' },
+  { name: 'Reactivated', source: 'Platform', desc: 'Returned after a dormant period and recent login.' },
+  { name: 'Dormant 30d', source: 'Platform', desc: 'No qualifying activity for at least 30 days.' },
+  { name: 'KYC verified', source: 'Platform', desc: 'Identity and age checks verified by operator platform.' },
+  { name: 'Sports bettors', source: 'Platform', desc: 'Recent sportsbook activity across connected brands.' },
+  { name: 'High rollers', source: 'MonoPulse', desc: 'High value wager behavior detected across casino events.' },
+  { name: 'Weekend players', source: 'MonoPulse', desc: 'Usually active Friday through Sunday.' },
+  { name: 'Sports crossovers', source: 'MonoPulse', desc: 'Sports users likely to engage with casino campaigns.' },
+  { name: 'VIP watchlist', source: 'MonoPulse', desc: 'Operator-managed VIP audience with host context.' },
+  { name: 'Churn risk', source: 'MonoPulse', desc: 'Activity decline suggests likely churn without intervention.' },
+];
 const HARD_GATES = [
   'Self-excluded and cooling-off players',
   'Suspended or closed accounts',
@@ -20,14 +30,15 @@ export default function StepAudience() {
   const { draft, update } = useCampaign();
   const aud = estimateAudience(draft);
   const [mode, setMode] = useState<MatchMode>('ANY');
+  const [query, setQuery] = useState('');
 
   const toggle = (key: 'segments' | 'tiers' | 'countries', v: string) => {
     const list = draft[key];
     update({ [key]: list.includes(v) ? list.filter((x) => x !== v) : [...list, v] } as never);
   };
 
-  const selectedPlatform = draft.segments.filter((s) => PLATFORM_SEGMENTS.includes(s));
-  const selectedMonoPulse = draft.segments.filter((s) => MONOPULSE_SEGMENTS.includes(s));
+  const selectedSegments = SEGMENT_LIBRARY.filter((s) => draft.segments.includes(s.name));
+  const segmentSourceCount = new Set(selectedSegments.map((s) => s.source)).size;
 
   return (
     <div className="flex flex-col gap-5">
@@ -41,33 +52,16 @@ export default function StepAudience() {
       <div className="grid grid-cols-3 gap-4">
         <Metric icon={Users} label="Estimated reach" value={fmtNum(aud.size)} detail="eligible after selected scope" accent />
         <Metric icon={UserMinus} label="Excluded" value={fmtNum(aud.excluded)} detail="risk, RG and hard gates" />
-        <Metric icon={Database} label="Segment sources" value={`${selectedPlatform.length + selectedMonoPulse.length}`} detail="platform + MonoPulse inputs" />
+        <Metric icon={Database} label="Selected segments" value={`${selectedSegments.length}`} detail={`${segmentSourceCount || 0} source${segmentSourceCount === 1 ? '' : 's'} represented`} />
       </div>
 
       <Section
         icon={SlidersHorizontal}
-        title="Segment membership"
-        desc="Choose whether players qualify through operator platform segments, MonoPulse-built segments, or both."
+        title="Segment library"
+        desc="Search reusable audiences by business meaning. Source is shown as context, not something operators need to configure."
         aside={<ModeControl value={mode} onChange={setMode} />}
       >
-        <div className="grid grid-cols-2 gap-4">
-          <SegmentSource
-            icon={Building2}
-            title="Platform segments"
-            desc="Synced from the operator platform or CRM."
-            options={PLATFORM_SEGMENTS}
-            selected={draft.segments}
-            onToggle={(v) => toggle('segments', v)}
-          />
-          <SegmentSource
-            icon={Database}
-            title="MonoPulse segments"
-            desc="Built in-house from events, player profile and campaign behavior."
-            options={MONOPULSE_SEGMENTS}
-            selected={draft.segments}
-            onToggle={(v) => toggle('segments', v)}
-          />
-        </div>
+        <SegmentLibrary query={query} onQuery={setQuery} selected={draft.segments} onToggle={(v) => toggle('segments', v)} />
         <div className="mt-4 rounded-lg border px-4 py-3" style={{ borderColor: 'var(--border-subtle)', background: 'var(--surface-2)' }}>
           <div className="flex items-center gap-2 text-[12.5px] font-medium text-fg-primary">
             <CheckCircle2 size={14} strokeWidth={2} style={{ color: 'var(--accent)' }} />
@@ -142,35 +136,63 @@ function ModeControl({ value, onChange }: { value: MatchMode; onChange: (value: 
   );
 }
 
-function SegmentSource({
-  icon: Icon,
-  title,
-  desc,
-  options,
+function SegmentLibrary({
+  query,
+  onQuery,
   selected,
   onToggle,
 }: {
-  icon: typeof Database;
-  title: string;
-  desc: string;
-  options: string[];
+  query: string;
+  onQuery: (value: string) => void;
   selected: string[];
   onToggle: (value: string) => void;
 }) {
+  const normalized = query.trim().toLowerCase();
+  const visible = SEGMENT_LIBRARY.filter((segment) =>
+    [segment.name, segment.source, segment.desc].some((value) => value.toLowerCase().includes(normalized))
+  );
+
   return (
-    <div className="rounded-lg border p-4" style={{ borderColor: 'var(--border-subtle)', background: 'var(--surface-2)' }}>
-      <div className="flex items-start gap-2.5">
-        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md" style={{ background: 'var(--surface-3)', color: 'var(--accent)' }}>
-          <Icon size={16} strokeWidth={1.9} />
-        </span>
-        <div>
-          <div className="text-[13.5px] font-semibold text-fg-primary">{title}</div>
-          <p className="mt-0.5 text-[12px] leading-relaxed text-fg-secondary">{desc}</p>
+    <div className="flex flex-col gap-3">
+      <div className="flex items-center gap-2 rounded-lg border px-3 py-2" style={{ borderColor: 'var(--border-strong)', background: 'var(--surface-2)' }}>
+        <Search size={15} strokeWidth={2} className="text-fg-muted" />
+        <input
+          value={query}
+          onChange={(e) => onQuery(e.target.value)}
+          placeholder="Search VIP, dormant, sports, first deposit..."
+          className="w-full bg-transparent text-[13px] outline-none"
+          style={{ color: 'var(--fg-primary)' }}
+        />
+      </div>
+      <div className="grid grid-cols-2 gap-3">
+        {visible.map((segment) => {
+          const on = selected.includes(segment.name);
+          return (
+            <button
+              key={segment.name}
+              onClick={() => onToggle(segment.name)}
+              className="rounded-lg border p-3 text-left transition-colors"
+              style={on ? { borderColor: 'var(--accent-border)', background: 'var(--accent-bg)' } : { borderColor: 'var(--border-subtle)', background: 'var(--surface-2)' }}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <div className="text-[13px] font-semibold text-fg-primary">{segment.name}</div>
+                  <p className="mt-1 line-clamp-2 text-[12px] leading-5 text-fg-secondary">{segment.desc}</p>
+                </div>
+                <span className="shrink-0 rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide" style={{ background: 'var(--surface-3)', color: 'var(--fg-muted)' }}>
+                  {segment.source}
+                </span>
+              </div>
+            </button>
+          );
+        })}
+      </div>
+      {visible.length === 0 && (
+        <div className="flex items-center gap-2 rounded-lg border border-dashed px-4 py-5 text-[12.5px] text-fg-secondary" style={{ borderColor: 'var(--border-strong)' }}>
+          <Sparkles size={15} strokeWidth={2} className="text-fg-muted" />
+          No segment matches that search.
         </div>
-      </div>
-      <div className="mt-3">
-        <TagSelect options={options} selected={selected} onToggle={onToggle} />
-      </div>
+      )}
     </div>
   );
 }

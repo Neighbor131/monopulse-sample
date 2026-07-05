@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import {
   GitBranch, Plus, Trash2, Check, AlertTriangle, Zap, Loader, TrendingUp, Coins, X,
-  Workflow, ShieldCheck, ListChecks,
+  Workflow, ShieldCheck, ListChecks, MousePointerClick, UserCheck, Gift,
 } from 'lucide-react';
 import { Section, Select } from '../../components/builder/form';
 import ModuleSections from '../../components/builder/ModuleFields';
@@ -72,11 +72,12 @@ export default function StepLogic() {
 
       <Section
         icon={GitBranch}
-        title="WHEN / IF / THEN rules"
-        desc="Rules are evaluated only after Audience Scope says the player is eligible."
+        title="Decision builder"
+        desc="Build the campaign in operator language first. Advanced IF logic stays available when needed."
         aside={<span className="rounded-md px-2 py-1 text-[11px] font-medium" style={{ background: 'var(--surface-3)', color: 'var(--fg-secondary)' }}>ALL · ANY · NONE</span>}
       >
         <div className="flex flex-col gap-3">
+          <DecisionPreview />
           {draft.rules.length === 0 && (
             <div className="flex flex-col items-center gap-2 rounded-lg border border-dashed py-8 text-center" style={{ borderColor: 'var(--border-strong)' }}>
               <GitBranch size={20} className="text-fg-muted" strokeWidth={1.75} />
@@ -153,6 +154,63 @@ function LogicToolbar({ mode, onChange }: { mode: string; onChange: (mode: strin
   );
 }
 
+function DecisionPreview() {
+  return (
+    <div className="grid grid-cols-3 gap-3">
+      <DecisionBlock
+        icon={MousePointerClick}
+        label="When"
+        title="Player does something"
+        detail="Deposit, wager, win, login or custom event."
+        color="var(--accent)"
+      />
+      <DecisionBlock
+        icon={UserCheck}
+        label="Who"
+        title="Eligible audience matches"
+        detail="Audience Scope and optional advanced conditions."
+        color="var(--status-scheduled)"
+      />
+      <DecisionBlock
+        icon={Gift}
+        label="Then"
+        title="MonoPulse updates outcome"
+        detail="Add progress, grant reward, tickets or points."
+        color="var(--success)"
+      />
+    </div>
+  );
+}
+
+function DecisionBlock({
+  icon: Icon,
+  label,
+  title,
+  detail,
+  color,
+}: {
+  icon: typeof MousePointerClick;
+  label: string;
+  title: string;
+  detail: string;
+  color: string;
+}) {
+  return (
+    <div className="rounded-lg border px-3.5 py-3" style={{ borderColor: 'var(--border-subtle)', background: 'var(--surface-2)' }}>
+      <div className="flex items-center gap-2">
+        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md" style={{ background: 'var(--surface-3)', color }}>
+          <Icon size={14} strokeWidth={2} />
+        </span>
+        <div>
+          <div className="text-[10.5px] font-semibold uppercase tracking-wider" style={{ color }}>{label}</div>
+          <div className="text-[12.5px] font-semibold text-fg-primary">{title}</div>
+        </div>
+      </div>
+      <p className="mt-2 text-[12px] leading-5 text-fg-secondary">{detail}</p>
+    </div>
+  );
+}
+
 function RuleCard({
   index, rule, onPatch, onRemove, onAddCondition, onPatchCondition, onRemoveCondition,
 }: {
@@ -188,13 +246,13 @@ function RuleCard({
       </div>
 
       <div className="flex flex-col gap-3 p-4">
-        <ClauseRow tag="WHEN" tagColor="var(--accent)">
+        <ClauseRow tag="WHEN" label="Player does" tagColor="var(--accent)">
           <div className="flex-1">
             <Select value={rule.when} onChange={(v) => onPatch({ when: v })} options={RULE_EVENTS} placeholder="Select the event that fires this rule..." />
           </div>
         </ClauseRow>
 
-        <ClauseRow tag="IF" tagColor="var(--status-scheduled)" align="start">
+        <ClauseRow tag="IF" label="Only count it when" tagColor="var(--status-scheduled)" align="start">
           <div className="flex flex-1 flex-col gap-2">
             <div className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-fg-muted">
               <ListChecks size={12} strokeWidth={2} /> Match ALL conditions in this group
@@ -234,7 +292,7 @@ function RuleCard({
           </div>
         </ClauseRow>
 
-        <ClauseRow tag="THEN" tagColor="var(--success)">
+        <ClauseRow tag="THEN" label="MonoPulse should" tagColor="var(--success)">
           <div className="flex flex-1 items-center gap-2">
             <div className="flex-1">
               <Select value={rule.thenAction} onChange={(v) => onPatch({ thenAction: v })} options={RULE_ACTIONS} placeholder="Select an action..." />
@@ -261,14 +319,15 @@ function RuleCard({
   );
 }
 
-function ClauseRow({ tag, tagColor, align = 'center', children }: { tag: string; tagColor: string; align?: 'center' | 'start'; children: React.ReactNode }) {
+function ClauseRow({ tag, label, tagColor, align = 'center', children }: { tag: string; label: string; tagColor: string; align?: 'center' | 'start'; children: React.ReactNode }) {
   return (
     <div className={`flex gap-3 ${align === 'start' ? 'items-start' : 'items-center'}`}>
       <span
-        className="mt-0 flex w-14 shrink-0 items-center justify-center rounded py-1.5 font-mono text-[10.5px] font-bold tracking-wide"
+        className="mt-0 flex w-28 shrink-0 flex-col justify-center rounded px-2.5 py-1.5"
         style={{ background: 'var(--surface-3)', color: tagColor }}
       >
-        {tag}
+        <span className="font-mono text-[10px] font-bold tracking-wide">{tag}</span>
+        <span className="mt-0.5 text-[10.5px] font-semibold normal-case tracking-normal">{label}</span>
       </span>
       {children}
     </div>
