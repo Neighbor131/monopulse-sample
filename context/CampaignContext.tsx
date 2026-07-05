@@ -42,7 +42,9 @@ export interface DraftCampaign {
   internalDesc: string;
   playerTitle: string;
   startDate: string;
+  startTime: string;
   endDate: string;
+  endTime: string;
   timezone: string;
   owner: string;
   // Brand scope
@@ -113,7 +115,9 @@ const DEFAULT_DRAFT: DraftCampaign = {
   internalDesc: '',
   playerTitle: '',
   startDate: '',
+  startTime: '09:00',
   endDate: '',
+  endTime: '23:59',
   timezone: 'UTC+00:00 — London',
   owner: 'Mara Ostheim',
   brandScope: 'brand_only',

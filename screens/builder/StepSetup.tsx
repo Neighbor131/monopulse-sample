@@ -77,11 +77,21 @@ export default function StepSetup() {
             <TextInput value={draft.playerTitle} onChange={(v) => update({ playerTitle: v })} placeholder="e.g. Complete 3 quests, earn boosts" />
           </Field>
           <div className="grid grid-cols-2 gap-4">
-            <Field label="Start date" required>
-              <TextInput type="date" value={draft.startDate} onChange={(v) => update({ startDate: v })} />
+            <Field label="Start" hint="date and time" required>
+              <DateTimeFields
+                date={draft.startDate}
+                time={draft.startTime}
+                onDate={(v) => update({ startDate: v })}
+                onTime={(v) => update({ startTime: v })}
+              />
             </Field>
-            <Field label="End date" required>
-              <TextInput type="date" value={draft.endDate} onChange={(v) => update({ endDate: v })} />
+            <Field label="End" hint="date and time" required>
+              <DateTimeFields
+                date={draft.endDate}
+                time={draft.endTime}
+                onDate={(v) => update({ endDate: v })}
+                onTime={(v) => update({ endTime: v })}
+              />
             </Field>
             <Field label="Timezone">
               <Select value={draft.timezone} onChange={(v) => update({ timezone: v })} options={TIMEZONES} />
@@ -222,6 +232,25 @@ export default function StepSetup() {
       </Section>
 
       <ModuleSections step="setup" />
+    </div>
+  );
+}
+
+function DateTimeFields({
+  date,
+  time,
+  onDate,
+  onTime,
+}: {
+  date: string;
+  time: string;
+  onDate: (value: string) => void;
+  onTime: (value: string) => void;
+}) {
+  return (
+    <div className="grid grid-cols-[1fr_112px] gap-2">
+      <TextInput type="date" value={date} onChange={onDate} />
+      <TextInput type="time" value={time} onChange={onTime} />
     </div>
   );
 }

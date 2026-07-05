@@ -204,7 +204,7 @@ export function testRules(d: DraftCampaign): RuleTest {
 // ── Step completeness ────────────────────────────────────────
 export function stepStatus(d: DraftCampaign): Record<StepId, FieldStatus> {
   const brandsOk = d.brandScope === 'network' ? (d.network.brandIdsMode === 'all' || d.brands.length > 0) : d.brands.length > 0;
-  const setupComplete = !!(d.name && d.startDate && d.endDate && brandsOk);
+  const setupComplete = !!(d.name && d.startDate && d.startTime && d.endDate && d.endTime && brandsOk);
   const setupPartial = !!(d.name || d.brands.length > 0 || d.brandScope === 'network');
 
   const audienceComplete = !!(d.segments.length > 0 || d.tiers.length > 0 || d.vipOnly);

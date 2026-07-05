@@ -83,7 +83,7 @@ export default function StepReview() {
         <SummaryCard title="Type & schedule" step="setup" onEdit={navigate}>
           <Kv k="Type" v={type?.name ?? '—'} />
           <Kv k="Name" v={draft.name || '—'} />
-          <Kv k="Runs" v={draft.startDate && draft.endDate ? `${draft.startDate} → ${draft.endDate}` : 'Not set'} />
+          <Kv k="Runs" v={draft.startDate && draft.endDate ? `${draft.startDate} ${draft.startTime} → ${draft.endDate} ${draft.endTime}` : 'Not set'} />
           <Kv k="Owner" v={draft.owner} />
         </SummaryCard>
 

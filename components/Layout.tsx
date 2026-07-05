@@ -25,8 +25,8 @@ interface SearchItem {
 export default function Layout({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
   const [theme, setTheme] = useState<ThemeMode>(() => {
-    if (typeof window === 'undefined') return 'dark';
-    return window.localStorage.getItem('monopulse-theme') === 'light' ? 'light' : 'dark';
+    if (typeof window === 'undefined') return 'light';
+    return window.localStorage.getItem('monopulse-theme') === 'dark' ? 'dark' : 'light';
   });
   const [panel, setPanel] = useState<OpenPanel>(null);
   const [commandOpen, setCommandOpen] = useState(false);

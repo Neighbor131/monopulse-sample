@@ -91,7 +91,7 @@ export const MODULE_SPECS: Record<CampaignTypeId, ModuleSection[]> = {
     {
       id: 'mission-pacing', step: 'rewards', title: 'Reward pacing', icon: Target,
       fields: [
-        { key: 'grantMode', label: 'Grant reward', type: 'segmented', options: ['On full completion', 'Per objective'], default: 'On full completion' },
+        { key: 'grantMode', label: 'Release reward', type: 'segmented', options: ['On full completion', 'Per objective'], default: 'On full completion' },
         { key: 'partialCredit', label: 'Carry partial progress across days', type: 'toggle', default: true },
       ],
     },
