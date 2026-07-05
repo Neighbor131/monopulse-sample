@@ -43,7 +43,6 @@ const SECTIONS: NavSection[] = [
       { label: 'Campaigns', icon: StatusUp, path: '/', match: ['/', '/create', '/builder'], badge: '4' },
       { label: 'Campaign Ops', icon: Calendar, path: '/ops', match: ['/ops'], badge: '5' },
       { label: 'Analytics', icon: Chart, path: '/analytics', match: ['/analytics'] },
-      { label: 'Mechanics', icon: SliderHorizontal, path: '/mechanics', match: ['/mechanics'] },
       { label: 'Loyalty', icon: Diamonds, path: '/loyalty', match: ['/loyalty'] },
       { label: 'Rewards', icon: Gift, path: '/rewards', match: ['/rewards'] },
     ],
@@ -60,6 +59,7 @@ const SECTIONS: NavSection[] = [
     items: [
       { label: 'Monitoring', icon: Activity, path: '/monitoring', match: ['/monitoring'], badge: '3' },
       { label: 'Risk & Compliance', icon: SecuritySafe, path: '/safety', match: ['/safety', '/approvals'] },
+      { label: 'Mechanics', icon: SliderHorizontal, path: '/mechanics', match: ['/mechanics'] },
       { label: 'Notifications', icon: NotificationBing, path: '/notifications', match: ['/notifications'] },
       { label: 'Audit Log', icon: Calendar, path: '/audit', match: ['/audit'] },
       { label: 'Brands & Org', icon: Buildings, path: '/org', match: ['/org'], badge: '1' },

@@ -12,6 +12,10 @@ export interface CalendarCampaign {
   owner: string;
   start: string;
   end: string;
+  day: 'Mon 08' | 'Tue 09' | 'Wed 10' | 'Thu 11' | 'Fri 12' | 'Sat 13' | 'Sun 14' | 'Mon 15';
+  monthDay: number;
+  startTime: string;
+  endTime: string;
   status: 'draft' | 'approval' | 'scheduled' | 'live' | 'ending' | 'reporting';
   risk: 'clear' | 'warning' | 'blocked';
 }
@@ -57,6 +61,10 @@ export const CALENDAR_CAMPAIGNS: CalendarCampaign[] = [
     owner: 'Mara Ostheim',
     start: 'Mon 08 Jul',
     end: 'Sun 14 Jul',
+    day: 'Mon 08',
+    monthDay: 8,
+    startTime: '09:00',
+    endTime: '23:59',
     status: 'live',
     risk: 'warning',
   },
@@ -68,6 +76,10 @@ export const CALENDAR_CAMPAIGNS: CalendarCampaign[] = [
     owner: 'Sofia Lindqvist',
     start: 'Wed 10 Jul',
     end: 'Wed 31 Jul',
+    day: 'Wed 10',
+    monthDay: 10,
+    startTime: '12:00',
+    endTime: '18:00',
     status: 'scheduled',
     risk: 'clear',
   },
@@ -79,6 +91,10 @@ export const CALENDAR_CAMPAIGNS: CalendarCampaign[] = [
     owner: 'Nika Bell',
     start: 'Fri 12 Jul',
     end: 'Fri 12 Jul',
+    day: 'Fri 12',
+    monthDay: 12,
+    startTime: '20:00',
+    endTime: '22:30',
     status: 'approval',
     risk: 'blocked',
   },
@@ -90,6 +106,10 @@ export const CALENDAR_CAMPAIGNS: CalendarCampaign[] = [
     owner: 'Mara Ostheim',
     start: 'Mon 15 Jul',
     end: 'Sun 21 Jul',
+    day: 'Mon 15',
+    monthDay: 15,
+    startTime: '10:00',
+    endTime: '17:00',
     status: 'draft',
     risk: 'clear',
   },
@@ -101,6 +121,10 @@ export const CALENDAR_CAMPAIGNS: CalendarCampaign[] = [
     owner: 'Finance Ops',
     start: 'Sat 01 Jun',
     end: 'Sun 30 Jun',
+    day: 'Sat 13',
+    monthDay: 13,
+    startTime: '08:00',
+    endTime: '10:00',
     status: 'reporting',
     risk: 'clear',
   },
