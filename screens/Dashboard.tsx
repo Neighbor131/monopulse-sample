@@ -1,19 +1,11 @@
 import { useNavigate } from 'react-router-dom';
 import {
-  Activity,
   Add,
   ArrowRight,
-  CalendarTick,
   Chart,
-  Clock,
-  Code,
   Data,
-  Diagram,
   Gift,
-  Health,
   MoneyTick,
-  People,
-  Routing,
   SecuritySafe,
   StatusUp,
   TaskSquare,
@@ -22,63 +14,47 @@ import {
 } from 'iconsax-react';
 import type { Icon } from 'iconsax-react';
 import {
-  actionQueue,
-  experiments,
-  healthCards,
-  performanceMetrics,
-  quickLinks,
-  timeline,
+  brandMoneyRows,
+  moneyActions,
+  moneyKpis,
+  profitabilityRows,
 } from '../data/dashboard';
-import type { ActionQueueItem, DashboardSeverity, ExperimentRow, TimelineItem } from '../data/dashboard';
+import type { DashboardSeverity, MoneyKpi, ProfitabilityRow } from '../data/dashboard';
 import { DemoStateHint, LoadingBlock, LoadingCards, StateCard, useDemoState } from '../components/StateViews';
 
-const HEALTH_ICON: Record<string, Icon> = {
-  campaigns: StatusUp,
-  rewards: Gift,
-  risk: SecuritySafe,
-  integrations: Code,
-  segments: People,
-  brands: Routing,
-};
-
-const QUEUE_ICON: Record<ActionQueueItem['kind'], Icon> = {
-  approval: TaskSquare,
-  reward: Gift,
-  segment: People,
-  integration: Code,
-  brand: Routing,
-  risk: SecuritySafe,
-};
-
-const TIMELINE_ICON: Record<TimelineItem['kind'], Icon> = {
-  campaign: StatusUp,
-  reward: Gift,
-  segment: People,
-  integration: Code,
+const KPI_ICON: Record<string, Icon> = {
+  ngr: TrendUp,
+  cost: Gift,
+  liability: MoneyTick,
+  remaining: Data,
+  roi: Chart,
   risk: SecuritySafe,
 };
 
 export default function Dashboard() {
   const navigate = useNavigate();
   const demoState = useDemoState();
-  const health = healthCards();
-  const queue = actionQueue();
-  const metrics = performanceMetrics();
-  const events = timeline();
+  const kpis = moneyKpis();
+  const actions = moneyActions();
+  const campaigns = profitabilityRows();
+  const brands = brandMoneyRows();
+  const moneyAtRisk = kpis.find((kpi) => kpi.id === 'risk');
 
   return (
-    <div className="mx-auto w-full max-w-[1360px] px-8 py-6">
+    <div className="mx-auto w-full max-w-[1440px] px-8 py-6">
       <div className="flex items-end justify-between gap-4">
         <div>
           <div className="flex items-center gap-2.5">
-            <h1 className="text-[19px] font-semibold tracking-tight">Dashboard</h1>
-            <SeverityPill severity={health.some((h) => h.severity === 'critical') ? 'critical' : health.some((h) => h.severity === 'warning') ? 'warning' : 'healthy'} label="Today" />
+            <h1 className="text-[20px] font-semibold tracking-tight">Money dashboard</h1>
+            {moneyAtRisk && <TonePill tone={moneyAtRisk.tone} label="Finance priority" />}
           </div>
-          <p className="mt-1 text-[13px] text-fg-secondary">Command center for campaign health, rewards, segments, approvals, integrations and brand readiness.</p>
+          <p className="mt-1 max-w-3xl text-[13px] leading-relaxed text-fg-secondary">
+            Finance-first command center for NGR, reward cost, open liability, budget burn and the actions that protect margin today.
+          </p>
         </div>
         <div className="flex items-center gap-2">
-          <button onClick={() => navigate('/approvals')} className="flex items-center gap-1.5 rounded-md px-3 py-2 text-[13px] font-semibold" style={{ background: 'var(--surface-3)', color: 'var(--fg-secondary)', border: '1px solid var(--border-strong)' }}>
-            <TaskSquare size={15} variant="Linear" /> Review queue
+          <button onClick={() => navigate('/ops')} className="flex items-center gap-1.5 rounded-md px-3 py-2 text-[13px] font-semibold" style={{ background: 'var(--surface-3)', color: 'var(--fg-secondary)', border: '1px solid var(--border-strong)' }}>
+            <TaskSquare size={15} variant="Linear" /> Open ops
           </button>
           <button onClick={() => navigate('/create')} className="flex items-center gap-1.5 rounded-md px-3.5 py-2 text-[13px] font-semibold" style={{ background: 'var(--accent)', color: 'var(--accent-fg)' }}>
             <Add size={15} variant="Linear" /> Create campaign
@@ -90,8 +66,8 @@ export default function Dashboard() {
         <div className="mt-5">
           <StateCard
             state="error"
-            title="Dashboard data is delayed"
-            detail="Health cards, action queue and timeline depend on multiple backend services. The empty shell should stay usable while the app explains which data source failed."
+            title="Money data is delayed"
+            detail="Financial dashboard data depends on campaign budgets, reward ledgers, grants, wallet state and liability caps. The shell should explain exactly which source failed."
             onAction={() => navigate('/dashboard')}
           />
           <DemoStateHint area="dashboard states" />
@@ -101,7 +77,7 @@ export default function Dashboard() {
       {demoState === 'loading' && (
         <div className="mt-5 grid gap-5">
           <LoadingCards count={6} />
-          <LoadingBlock title="Loading dashboard queue" rows={5} />
+          <LoadingBlock title="Loading financial exposure" rows={5} />
           <DemoStateHint area="dashboard states" />
         </div>
       )}
@@ -110,8 +86,8 @@ export default function Dashboard() {
         <div className="mt-5 grid gap-5">
           <StateCard
             state="empty"
-            title="No urgent work right now"
-            detail="This is the ideal calm state: no approvals waiting, no failed rewards, no integration incidents and no blocked campaigns."
+            title="No money exposure needs action"
+            detail="No campaigns are over budget, no reward grants are blocked, no liability caps are close to breach and all financial controls are healthy."
             actionLabel="Create campaign"
             onAction={() => navigate('/create')}
           />
@@ -119,102 +95,136 @@ export default function Dashboard() {
         </div>
       )}
 
-      {demoState && demoState !== null ? null : (
+      {demoState ? null : (
         <>
+          <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-6">
+            {kpis.map((kpi) => <MoneyKpiCard key={kpi.id} kpi={kpi} onOpen={() => navigate(kpi.href)} />)}
+          </div>
 
-      <div className="mt-5 grid grid-cols-6 gap-3">
-        {health.map((h) => <HealthCard key={h.id} card={h} onOpen={() => navigate(h.href)} />)}
-      </div>
-
-      <div className="mt-5 grid grid-cols-[minmax(0,1.35fr)_minmax(340px,0.65fr)] gap-4">
-        <section className="overflow-hidden rounded-xl border" style={{ borderColor: 'var(--border-subtle)', background: 'var(--surface-1)' }}>
-          <SectionHeader icon={TaskSquare} title="Action queue" desc="Highest-priority work across approvals, rewards, segments and integrations." />
-          <div className="overflow-x-auto">
-            <div className="min-w-[820px] divide-y" style={{ borderColor: 'var(--border-subtle)' }}>
-              <div className="grid grid-cols-[120px_minmax(300px,1fr)_170px_110px] items-center gap-4 px-5 py-2.5 text-[10.5px] font-semibold uppercase tracking-wider text-fg-muted" style={{ background: 'var(--surface-2)' }}>
-                <span>Type</span>
-                <span>Item</span>
-                <span>Owner</span>
-                <span>Severity</span>
+          <div className="mt-5 grid gap-4 xl:grid-cols-[minmax(0,1.45fr)_minmax(360px,0.55fr)]">
+            <section className="overflow-hidden rounded-xl border" style={{ borderColor: 'var(--border-subtle)', background: 'var(--surface-1)' }}>
+              <SectionHeader icon={StatusUp} title="Campaign profitability" desc="Campaigns sorted for commercial review: spend, projected NGR, ROI and financial state." />
+              <div className="overflow-x-auto">
+                <table className="w-full min-w-[780px] border-collapse text-left">
+                  <thead>
+                    <tr className="text-[10.5px] font-semibold uppercase tracking-wider text-fg-muted" style={{ background: 'var(--surface-2)' }}>
+                      <th className="px-5 py-2.5">Campaign</th>
+                      <th className="px-4 py-2.5">Mechanic</th>
+                      <th className="px-4 py-2.5">Brands</th>
+                      <th className="px-4 py-2.5 text-right">Budget used</th>
+                      <th className="px-4 py-2.5 text-right">Reward cost</th>
+                      <th className="px-4 py-2.5 text-right">Projected NGR</th>
+                      <th className="px-4 py-2.5 text-right">ROI</th>
+                      <th className="px-5 py-2.5">State</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {campaigns.map((campaign) => <ProfitabilityItem key={campaign.id} campaign={campaign} onOpen={() => navigate(campaign.href)} />)}
+                  </tbody>
+                </table>
               </div>
-              {queue.map((q) => {
-                const Icon = QUEUE_ICON[q.kind];
-                return (
-                  <button key={q.id} onClick={() => navigate(q.href)} className="grid w-full grid-cols-[120px_minmax(300px,1fr)_170px_110px] items-center gap-4 px-5 py-3 text-left hover:bg-[var(--surface-2)]">
-                    <span className="inline-flex items-center gap-2 text-[12px] capitalize text-fg-secondary"><Icon size={14} variant="Linear" /> {q.kind}</span>
-                    <div className="min-w-0"><div className="truncate text-[13px] font-medium text-fg-primary">{q.title}</div><div className="truncate text-[11.5px] text-fg-muted">{q.detail}</div></div>
-                    <span className="truncate text-[12px] text-fg-secondary">{q.owner}</span>
-                    <SeverityPill severity={q.severity} />
+            </section>
+
+            <section className="rounded-xl border" style={{ borderColor: 'var(--border-subtle)', background: 'var(--surface-1)' }}>
+              <SectionHeader icon={Warning2} title="Money-impact actions" desc="Highest-value issues to resolve before they leak margin or block payouts." />
+              <div className="grid gap-2 p-4">
+                {actions.map((action) => (
+                  <button key={action.id} onClick={() => navigate(action.href)} className="rounded-lg border p-3 text-left hover:bg-[var(--surface-2)]" style={{ borderColor: 'var(--border-subtle)', background: 'var(--surface-2)' }}>
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <div className="truncate text-[13px] font-semibold text-fg-primary">{action.title}</div>
+                        <div className="mt-1 line-clamp-2 text-[11.5px] text-fg-muted">{action.detail}</div>
+                      </div>
+                      <div className="shrink-0 text-right">
+                        <div className="font-mono text-[13px] font-semibold tabular-nums text-fg-primary">{action.amount}</div>
+                        <SeverityPill severity={action.severity} />
+                      </div>
+                    </div>
+                    <div className="mt-2 flex items-center justify-between text-[11.5px] text-fg-secondary">
+                      <span>{action.owner}</span>
+                      <ArrowRight size={14} variant="Linear" color="var(--fg-muted)" />
+                    </div>
                   </button>
-                );
-              })}
-            </div>
+                ))}
+              </div>
+            </section>
           </div>
-        </section>
 
-        <section className="rounded-xl border" style={{ borderColor: 'var(--border-subtle)', background: 'var(--surface-1)' }}>
-          <SectionHeader icon={Chart} title="Performance snapshot" desc="Live commercial and engagement readout." />
-          <div className="grid gap-3 p-4">
-            {metrics.map((m) => <Metric key={m.label} metric={m} />)}
+          <div className="mt-4 grid gap-4 xl:grid-cols-[minmax(0,1fr)_420px]">
+            <section className="rounded-xl border" style={{ borderColor: 'var(--border-subtle)', background: 'var(--surface-1)' }}>
+              <SectionHeader icon={MoneyTick} title="Brand exposure" desc="Reward issued value, pending liability and cap usage by brand." />
+              <div className="divide-y" style={{ borderColor: 'var(--border-subtle)' }}>
+                {brands.map((brand) => (
+                  <button key={brand.brand} onClick={() => navigate(brand.href)} className="grid w-full grid-cols-[72px_1fr_120px_120px_90px] items-center gap-4 px-5 py-3 text-left hover:bg-[var(--surface-2)]">
+                    <span className="font-mono text-[13px] font-semibold text-fg-primary">{brand.brand}</span>
+                    <div className="h-2 overflow-hidden rounded-full" style={{ background: 'var(--surface-3)' }}>
+                      <div className="h-full rounded-full" style={{ width: `${Math.min(100, brand.capUsed)}%`, background: severityColor(brand.health) }} />
+                    </div>
+                    <span className="text-right font-mono text-[12.5px] text-fg-secondary">{brand.issued}</span>
+                    <span className="text-right font-mono text-[12.5px] text-fg-secondary">{brand.pending}</span>
+                    <SeverityPill severity={brand.health} label={`${brand.capUsed}% cap`} />
+                  </button>
+                ))}
+              </div>
+            </section>
+
+            <section className="rounded-xl border" style={{ borderColor: 'var(--border-subtle)', background: 'var(--surface-1)' }}>
+              <SectionHeader icon={Data} title="Finance drill-downs" desc="Useful routes for the product-owner demo." />
+              <div className="grid gap-2 p-4">
+                {[
+                  { label: 'Reward liability', detail: 'Open reward exposure, caps and failed grants', href: '/rewards' },
+                  { label: 'Campaign Ops calendar', detail: 'Budget-sensitive launch windows', href: '/ops' },
+                  { label: 'Analytics', detail: 'ROI, retention, LTV and reward cost trends', href: '/analytics' },
+                  { label: 'Risk & approvals', detail: 'Financial blockers and high-value approvals', href: '/safety' },
+                  { label: 'Audit log', detail: 'Who changed money-sensitive settings', href: '/audit' },
+                ].map((link) => (
+                  <button key={link.label} onClick={() => navigate(link.href)} className="flex items-center justify-between gap-3 rounded-lg border px-3 py-2.5 text-left hover:bg-[var(--surface-2)]" style={{ borderColor: 'var(--border-subtle)', background: 'var(--surface-2)' }}>
+                    <span>
+                      <span className="block text-[13px] font-medium text-fg-primary">{link.label}</span>
+                      <span className="block text-[11.5px] text-fg-muted">{link.detail}</span>
+                    </span>
+                    <ArrowRight size={15} variant="Linear" color="var(--fg-muted)" />
+                  </button>
+                ))}
+              </div>
+            </section>
           </div>
-        </section>
-      </div>
 
-      <div className="mt-4 grid grid-cols-[minmax(0,1fr)_420px] gap-4">
-        <section className="rounded-xl border" style={{ borderColor: 'var(--border-subtle)', background: 'var(--surface-1)' }}>
-          <SectionHeader icon={Activity} title="Operational timeline" desc="Recent events from campaign, reward, segment, integration and risk systems." />
-          <div className="divide-y" style={{ borderColor: 'var(--border-subtle)' }}>
-            {events.map((e) => {
-              const Icon = TIMELINE_ICON[e.kind];
-              return (
-                <button key={e.id} onClick={() => navigate(e.href)} className="grid w-full grid-cols-[70px_28px_1fr_100px] items-start gap-3 px-5 py-3 text-left hover:bg-[var(--surface-2)]">
-                  <span className="font-mono text-[12px] text-fg-muted">{e.at}</span>
-                  <span className="flex h-6 w-6 items-center justify-center rounded-md" style={{ background: 'var(--surface-3)', color: severityColor(e.severity) }}><Icon size={13} variant="Linear" color={severityColor(e.severity)} /></span>
-                  <div className="min-w-0"><div className="truncate text-[13px] font-medium text-fg-primary">{e.title}</div><div className="truncate text-[12px] text-fg-secondary">{e.detail}</div></div>
-                  <SeverityPill severity={e.severity} />
-                </button>
-              );
-            })}
-          </div>
-        </section>
-
-        <section className="rounded-xl border" style={{ borderColor: 'var(--border-subtle)', background: 'var(--surface-1)' }}>
-          <SectionHeader icon={Data} title="Quick links" desc="Common operator actions." />
-          <div className="grid gap-2 p-4">
-            {quickLinks.map((l) => (
-              <button key={l.label} onClick={() => navigate(l.href)} className="flex items-center justify-between gap-3 rounded-lg border px-3 py-2.5 text-left hover:bg-[var(--surface-2)]" style={{ borderColor: 'var(--border-subtle)', background: 'var(--surface-2)' }}>
-                <span><span className="block text-[13px] font-medium text-fg-primary">{l.label}</span><span className="block text-[11.5px] text-fg-muted">{l.detail}</span></span>
-                <ArrowRight size={15} variant="Linear" color="var(--fg-muted)" />
-              </button>
-            ))}
-          </div>
-        </section>
-      </div>
-
-      <section className="mt-4 overflow-hidden rounded-xl border" style={{ borderColor: 'var(--border-subtle)', background: 'var(--surface-1)' }}>
-        <SectionHeader icon={Diagram} title="A/B experiment monitor" desc="Prototype and campaign comparison readout for product-owner review." />
-        <div className="overflow-x-auto">
-          <table className="min-w-[860px] w-full border-collapse text-left">
-            <thead><tr className="text-[10.5px] font-semibold uppercase tracking-wider text-fg-muted" style={{ background: 'var(--surface-2)' }}><th className="px-5 py-2.5">Experiment</th><th className="px-4 py-2.5">Variant A</th><th className="px-4 py-2.5">Variant B</th><th className="px-4 py-2.5 text-right">Audience</th><th className="px-4 py-2.5 text-right">Lift</th><th className="px-4 py-2.5">Confidence</th><th className="px-4 py-2.5">Status</th></tr></thead>
-            <tbody>{experiments.map((e) => <Experiment key={e.id} exp={e} />)}</tbody>
-          </table>
-        </div>
-      </section>
-      <DemoStateHint area="dashboard states" />
+          <DemoStateHint area="dashboard states" />
         </>
       )}
     </div>
   );
 }
 
-function HealthCard({ card, onOpen }: { card: ReturnType<typeof healthCards>[number]; onOpen: () => void }) {
-  const Icon = HEALTH_ICON[card.id] ?? Health;
+function MoneyKpiCard({ kpi, onOpen }: { kpi: MoneyKpi; onOpen: () => void }) {
+  const Icon = KPI_ICON[kpi.id] ?? MoneyTick;
   return (
     <button onClick={onOpen} className="rounded-xl border px-4 py-3.5 text-left hover:bg-[var(--surface-2)]" style={{ borderColor: 'var(--border-subtle)', background: 'var(--surface-1)' }}>
-      <div className="flex items-center gap-1.5 text-[10.5px] font-semibold uppercase tracking-wider text-fg-muted"><span className="flex h-5 w-5 items-center justify-center rounded" style={{ background: 'var(--surface-3)' }}><Icon size={12} variant="Linear" color={severityColor(card.severity)} /></span>{card.label}</div>
-      <div className="mt-1.5 font-mono text-[22px] font-semibold leading-none tabular-nums text-fg-primary">{card.value}</div>
-      <div className="mt-1 truncate text-[11.5px] text-fg-muted">{card.detail}</div>
+      <div className="flex items-center gap-1.5 text-[10.5px] font-semibold uppercase tracking-wider text-fg-muted">
+        <span className="flex h-5 w-5 items-center justify-center rounded" style={{ background: 'var(--surface-3)' }}>
+          <Icon size={12} variant="Linear" color={toneColor(kpi.tone)} />
+        </span>
+        {kpi.label}
+      </div>
+      <div className="mt-2 font-mono text-[22px] font-semibold leading-none tabular-nums text-fg-primary">{kpi.value}</div>
+      <div className="mt-1 line-clamp-2 text-[11.5px]" style={{ color: toneColor(kpi.tone) }}>{kpi.detail}</div>
     </button>
+  );
+}
+
+function ProfitabilityItem({ campaign, onOpen }: { campaign: ProfitabilityRow; onOpen: () => void }) {
+  return (
+    <tr onClick={onOpen} className="cursor-pointer border-t hover:bg-[var(--surface-2)]" style={{ borderColor: 'var(--border-subtle)' }}>
+      <td className="px-5 py-3"><div className="max-w-[190px] text-[13px] font-medium text-fg-primary">{campaign.name}</div><div className="font-mono text-[11px] text-fg-muted">{campaign.id}</div></td>
+      <td className="px-4 py-3 text-[12.5px] capitalize text-fg-secondary">{campaign.mechanic}</td>
+      <td className="px-4 py-3 text-[12.5px] text-fg-secondary"><span className="line-clamp-2">{campaign.brands}</span></td>
+      <td className="px-4 py-3 text-right font-mono text-[12.5px] text-fg-secondary">{campaign.budgetUsed}</td>
+      <td className="px-4 py-3 text-right font-mono text-[12.5px] text-fg-secondary">{campaign.rewardCost}</td>
+      <td className="px-4 py-3 text-right font-mono text-[12.5px] text-fg-secondary">{campaign.projectedNgr}</td>
+      <td className="px-4 py-3 text-right font-mono text-[12.5px] font-semibold text-fg-primary">{campaign.roi}</td>
+      <td className="px-5 py-3"><StatusPill status={campaign.status} /></td>
+    </tr>
   );
 }
 
@@ -222,20 +232,32 @@ function SectionHeader({ icon: Icon, title, desc }: { icon: Icon; title: string;
   return <div className="border-b px-5 py-3" style={{ borderColor: 'var(--border-subtle)' }}><div className="flex items-center gap-2"><Icon size={14} variant="Linear" color="var(--fg-muted)" /><h2 className="text-[14px] font-semibold text-fg-primary">{title}</h2></div><p className="mt-0.5 text-[12.5px] text-fg-secondary">{desc}</p></div>;
 }
 
-function Metric({ metric }: { metric: ReturnType<typeof performanceMetrics>[number] }) {
-  const color = metric.tone === 'warning' ? 'var(--warning)' : metric.tone === 'down' ? 'var(--danger)' : metric.tone === 'up' ? 'var(--success)' : 'var(--fg-primary)';
-  const Icon = metric.tone === 'warning' ? Warning2 : metric.tone === 'up' ? TrendUp : MoneyTick;
-  return <div className="rounded-lg border px-3 py-2.5" style={{ borderColor: 'var(--border-subtle)', background: 'var(--surface-2)' }}><div className="flex items-center justify-between gap-3"><span className="text-[10.5px] font-semibold uppercase tracking-wide text-fg-muted">{metric.label}</span><Icon size={13} variant="Linear" color={color} /></div><div className="mt-1 font-mono text-[20px] font-semibold tabular-nums text-fg-primary">{metric.value}</div><div className="mt-0.5 text-[11.5px]" style={{ color }}>{metric.delta}</div></div>;
-}
-
-function Experiment({ exp }: { exp: ExperimentRow }) {
-  const severity: DashboardSeverity = exp.status === 'needs_review' ? 'warning' : 'healthy';
-  return <tr className="border-t" style={{ borderColor: 'var(--border-subtle)', background: 'var(--surface-2)' }}><td className="px-5 py-3"><div className="text-[13px] font-medium text-fg-primary">{exp.name}</div><div className="font-mono text-[11px] text-fg-muted">{exp.id}</div></td><td className="px-4 py-3 text-[12.5px] text-fg-secondary">{exp.variantA}</td><td className="px-4 py-3 text-[12.5px] text-fg-secondary">{exp.variantB}</td><td className="px-4 py-3 text-right font-mono text-[12.5px] text-fg-secondary">{exp.audience.toLocaleString()}</td><td className="px-4 py-3 text-right font-mono text-[12.5px]" style={{ color: 'var(--success)' }}>{exp.lift}</td><td className="px-4 py-3 text-[12.5px] text-fg-secondary">{exp.confidence}</td><td className="px-4 py-3"><SeverityPill severity={severity} label={exp.status.replace('_', ' ')} /></td></tr>;
+function StatusPill({ status }: { status: ProfitabilityRow['status'] }) {
+  const severity: DashboardSeverity = status === 'blocked' ? 'critical' : status === 'watch' ? 'warning' : 'healthy';
+  return <SeverityPill severity={severity} label={status} />;
 }
 
 function SeverityPill({ severity, label }: { severity: DashboardSeverity; label?: string }) {
   const style = severity === 'healthy' ? { color: 'var(--success)', background: 'var(--status-live-bg)' } : severity === 'warning' ? { color: 'var(--warning)', background: 'var(--warning-bg)' } : { color: 'var(--danger)', background: 'var(--danger-bg)' };
   return <span className="inline-flex w-fit items-center gap-1.5 rounded-md px-2 py-0.5 text-[11px] font-medium capitalize leading-none" style={style}><span className="h-1.5 w-1.5 rounded-full" style={{ background: style.color }} /> {label ?? severity}</span>;
+}
+
+function TonePill({ tone, label }: { tone: MoneyKpi['tone']; label: string }) {
+  return <span className="rounded px-2 py-0.5 text-[11px] font-semibold" style={{ background: toneBg(tone), color: toneColor(tone) }}>{label}</span>;
+}
+
+function toneColor(tone: MoneyKpi['tone']) {
+  if (tone === 'danger') return 'var(--danger)';
+  if (tone === 'warning') return 'var(--warning)';
+  if (tone === 'good') return 'var(--success)';
+  return 'var(--fg-secondary)';
+}
+
+function toneBg(tone: MoneyKpi['tone']) {
+  if (tone === 'danger') return 'var(--danger-bg)';
+  if (tone === 'warning') return 'var(--warning-bg)';
+  if (tone === 'good') return 'var(--status-live-bg)';
+  return 'var(--surface-3)';
 }
 
 function severityColor(severity: DashboardSeverity) {

@@ -1,6 +1,6 @@
 import { CAMPAIGNS } from './campaigns';
 import { EVENT_LOGS, PROVIDERS, integrationKpis } from './integrations';
-import { REWARDS, MANUAL_GRANTS, RISK_GATES, rewardKpis } from './rewards';
+import { REWARDS, MANUAL_GRANTS, RISK_GATES, LIABILITY, rewardKpis } from './rewards';
 import { SEGMENTS, segmentKpis } from './segments';
 import { ORG_BRANDS, RESTRICTIONS, orgKpis } from './org';
 import { REVIEWS, reviewCounts } from './reviews';
@@ -62,6 +62,49 @@ export interface QuickLink {
   href: string;
 }
 
+export interface MoneyKpi {
+  id: string;
+  label: string;
+  value: string;
+  detail: string;
+  tone: 'good' | 'warning' | 'danger' | 'neutral';
+  href: string;
+}
+
+export interface ProfitabilityRow {
+  id: string;
+  name: string;
+  mechanic: string;
+  brands: string;
+  budgetUsed: string;
+  rewardCost: string;
+  projectedNgr: string;
+  roi: string;
+  status: 'profitable' | 'watch' | 'blocked';
+  href: string;
+}
+
+export interface BrandMoneyRow {
+  brand: string;
+  issued: string;
+  pending: string;
+  capUsed: number;
+  health: DashboardSeverity;
+  href: string;
+}
+
+export interface MoneyActionItem {
+  id: string;
+  title: string;
+  amount: string;
+  detail: string;
+  owner: string;
+  severity: DashboardSeverity;
+  href: string;
+}
+
+const money = (amount: number) => `€${Math.round(amount).toLocaleString()}`;
+
 export const dashboardKpis = () => {
   const campaignActive = CAMPAIGNS.filter((c) => ['live', 'final_day', 'standby', 'pending_seed'].includes(c.status)).length;
   const campaignsAtRisk = CAMPAIGNS.filter((c) => c.risk !== 'none').length;
@@ -82,6 +125,99 @@ export const dashboardKpis = () => {
     brandIssues: org.blockedRules,
   };
 };
+
+export function moneyKpis(): MoneyKpi[] {
+  const totalBudget = CAMPAIGNS.reduce((sum, campaign) => sum + campaign.budgetTotal, 0);
+  const usedBudget = CAMPAIGNS.reduce((sum, campaign) => sum + campaign.budgetUsed, 0);
+  const rewardCost = CAMPAIGNS.reduce((sum, campaign) => sum + campaign.rewardCost, 0);
+  const pendingLiability = rewardKpis().pendingLiability;
+  const openGrantValue = MANUAL_GRANTS.filter((grant) => ['pending', 'retrying', 'failed'].includes(grant.status)).reduce((sum, grant) => sum + grant.amount, 0);
+  const projectedNgr = 1284000;
+  const roi = projectedNgr / Math.max(1, rewardCost + pendingLiability);
+  const atRisk = pendingLiability + openGrantValue + CAMPAIGNS.filter((campaign) => campaign.risk !== 'none').reduce((sum, campaign) => sum + Math.max(0, campaign.rewardCost), 0);
+
+  return [
+    { id: 'ngr', label: 'Projected NGR', value: money(projectedNgr), detail: '+12.4% vs prior campaign cycle', tone: 'good', href: '/analytics' },
+    { id: 'cost', label: 'Reward cost', value: money(rewardCost), detail: `${Math.round((rewardCost / totalBudget) * 100)}% of approved campaign budget`, tone: 'warning', href: '/' },
+    { id: 'liability', label: 'Open liability', value: money(pendingLiability), detail: `${REWARDS.filter((reward) => reward.pendingLiability > 0).length} reward objects carry exposure`, tone: 'warning', href: '/rewards' },
+    { id: 'remaining', label: 'Budget remaining', value: money(totalBudget - usedBudget), detail: `${money(usedBudget)} used from ${money(totalBudget)}`, tone: 'neutral', href: '/ops' },
+    { id: 'roi', label: 'Blended ROI', value: `${roi.toFixed(1)}x`, detail: 'projected NGR divided by reward cost + liability', tone: 'good', href: '/analytics' },
+    { id: 'risk', label: 'Money at risk', value: money(atRisk), detail: 'blocked grants, open liability and risky campaign spend', tone: 'danger', href: '/safety' },
+  ];
+}
+
+export function profitabilityRows(): ProfitabilityRow[] {
+  const projectedByCampaign = [174000, 286000, 0, 126000, 42000, 690000, 88000, 62000, 38000, 0, 24500, 0, 0];
+
+  return CAMPAIGNS.slice(0, 8).map((campaign, index) => {
+    const projectedNgr = projectedByCampaign[index] ?? Math.round(campaign.rewardCost * 2.2);
+    const roi = projectedNgr / Math.max(1, campaign.rewardCost || campaign.budgetUsed || 1);
+    const used = Math.round((campaign.budgetUsed / campaign.budgetTotal) * 100);
+    const status: ProfitabilityRow['status'] = campaign.risk === 'blocked' ? 'blocked' : used > 85 || roi < 1.4 ? 'watch' : 'profitable';
+
+    return {
+      id: campaign.id,
+      name: campaign.name,
+      mechanic: campaign.type,
+      brands: campaign.brands.join(', '),
+      budgetUsed: `${used}%`,
+      rewardCost: money(campaign.rewardCost),
+      projectedNgr: projectedNgr ? money(projectedNgr) : 'Not started',
+      roi: projectedNgr ? `${roi.toFixed(1)}x` : '—',
+      status,
+      href: `/campaigns/${campaign.id}`,
+    };
+  });
+}
+
+export function brandMoneyRows(): BrandMoneyRow[] {
+  return LIABILITY.map((row) => {
+    const used = Math.round(((row.issuedValue + row.pendingValue) / row.cap) * 100);
+    const health: DashboardSeverity = row.health === 'failing' || used >= 100 ? 'critical' : row.health === 'warning' || used >= 75 ? 'warning' : 'healthy';
+    return {
+      brand: row.brand,
+      issued: money(row.issuedValue),
+      pending: money(row.pendingValue),
+      capUsed: used,
+      health,
+      href: '/rewards',
+    };
+  }).sort((a, b) => b.capUsed - a.capUsed);
+}
+
+export function moneyActions(): MoneyActionItem[] {
+  const grantActions = MANUAL_GRANTS.filter((grant) => ['pending', 'retrying', 'failed'].includes(grant.status)).map((grant) => ({
+    id: grant.id,
+    title: grant.rewardName,
+    amount: money(grant.amount),
+    detail: `${grant.brand} · ${grant.reason}`,
+    owner: grant.requester,
+    severity: grant.status === 'failed' || grant.risk === 'blocked' ? 'critical' as DashboardSeverity : 'warning' as DashboardSeverity,
+    href: '/rewards',
+  }));
+
+  const capActions = RISK_GATES.filter((gate) => gate.status !== 'clear').map((gate) => ({
+    id: gate.id,
+    title: gate.label,
+    amount: gate.status === 'blocked' ? money(rewardKpis().pendingLiability) : 'Review',
+    detail: gate.impact,
+    owner: gate.owner,
+    severity: gate.status === 'blocked' ? 'critical' as DashboardSeverity : 'warning' as DashboardSeverity,
+    href: '/safety',
+  }));
+
+  const campaignActions = CAMPAIGNS.filter((campaign) => campaign.risk !== 'none').slice(0, 3).map((campaign) => ({
+    id: campaign.id,
+    title: campaign.name,
+    amount: money(campaign.rewardCost),
+    detail: campaign.riskNote ?? 'Campaign needs financial/risk review',
+    owner: campaign.owner,
+    severity: campaign.risk === 'blocked' ? 'critical' as DashboardSeverity : 'warning' as DashboardSeverity,
+    href: `/campaigns/${campaign.id}`,
+  }));
+
+  return [...grantActions, ...capActions, ...campaignActions].slice(0, 8);
+}
 
 export function healthCards(): HealthCard[] {
   const k = dashboardKpis();
