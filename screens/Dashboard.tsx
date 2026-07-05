@@ -45,11 +45,11 @@ export default function Dashboard() {
       <div className="flex items-end justify-between gap-4">
         <div>
           <div className="flex items-center gap-2.5">
-            <h1 className="text-[20px] font-semibold tracking-tight">Money dashboard</h1>
-            {moneyAtRisk && <TonePill tone={moneyAtRisk.tone} label="Finance priority" />}
+            <h1 className="text-[20px] font-semibold tracking-tight">Dashboard</h1>
+            {moneyAtRisk && <SeverityPill severity={moneyAtRisk.tone === 'danger' ? 'critical' : moneyAtRisk.tone === 'warning' ? 'warning' : 'healthy'} label="Today" />}
           </div>
           <p className="mt-1 max-w-3xl text-[13px] leading-relaxed text-fg-secondary">
-            Finance-first command center for NGR, reward cost, open liability, budget burn and the actions that protect margin today.
+            Commercial control view for NGR, reward cost, open liability, budget burn and the actions that protect margin today.
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -242,22 +242,11 @@ function SeverityPill({ severity, label }: { severity: DashboardSeverity; label?
   return <span className="inline-flex w-fit items-center gap-1.5 rounded-md px-2 py-0.5 text-[11px] font-medium capitalize leading-none" style={style}><span className="h-1.5 w-1.5 rounded-full" style={{ background: style.color }} /> {label ?? severity}</span>;
 }
 
-function TonePill({ tone, label }: { tone: MoneyKpi['tone']; label: string }) {
-  return <span className="rounded px-2 py-0.5 text-[11px] font-semibold" style={{ background: toneBg(tone), color: toneColor(tone) }}>{label}</span>;
-}
-
 function toneColor(tone: MoneyKpi['tone']) {
   if (tone === 'danger') return 'var(--danger)';
   if (tone === 'warning') return 'var(--warning)';
   if (tone === 'good') return 'var(--success)';
   return 'var(--fg-secondary)';
-}
-
-function toneBg(tone: MoneyKpi['tone']) {
-  if (tone === 'danger') return 'var(--danger-bg)';
-  if (tone === 'warning') return 'var(--warning-bg)';
-  if (tone === 'good') return 'var(--status-live-bg)';
-  return 'var(--surface-3)';
 }
 
 function severityColor(severity: DashboardSeverity) {
