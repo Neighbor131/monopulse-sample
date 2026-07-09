@@ -68,9 +68,9 @@ Use this checklist before showing the prototype.
 ## Segments
 
 - Segment table scrolls without clipping.
-- New segment drawer opens.
-- Recalculate modal opens.
-- Rule builder fields do not overlap.
+- Register source drawer opens.
+- Refresh cache modal opens.
+- Source mapping fields do not overlap.
 - Usage map explains connected objects clearly.
 
 ## Monitoring And Integrations

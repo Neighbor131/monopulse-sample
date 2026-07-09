@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This prototype explores the operator backoffice for MonoPulse gamification: campaign creation, loyalty/status management, reward fulfillment, player inspection, segment building, monitoring, integrations, org/brand controls, approvals, and operational safety.
+This prototype explores the operator backoffice for MonoPulse gamification: campaign creation, loyalty/status management, reward fulfillment, player inspection, platform segment usage, monitoring, integrations, org/brand controls, approvals, and operational safety.
 
 The design target is a dense, operational backoffice for CRM/Retention Managers and Casino Managers, with visible touchpoints for Risk/Compliance and Technical Admin users. The latest addition is a campaign operations layer for calendar visibility, Jira-like task ownership, and automatic end-of-campaign reporting.
 
@@ -44,7 +44,7 @@ The design target is a dense, operational backoffice for CRM/Retention Managers 
 | `/forgot-password` | Password recovery |
 | `/2fa` | Two-factor checkpoint |
 | `/select-org` | Organization and brand-scope selection |
-| `/dashboard` | Operational overview and action queue |
+| `/dashboard` | Commercial snapshot, cached money KPIs and action queue |
 | `/ops` | Campaign calendar, ops tasks, report templates, generated reports |
 | `/` | Campaign list |
 | `/campaigns/:id` | Campaign detail and operational state |
@@ -56,7 +56,7 @@ The design target is a dense, operational backoffice for CRM/Retention Managers 
 | `/rewards/:id` | Reward fulfillment detail |
 | `/players` | Player search and list |
 | `/players/:id` | Player profile, risk, rewards, ledger |
-| `/segments` | Audience segment library and builder |
+| `/segments` | Platform/CRM segment registry, sync health, usage and cached counts |
 | `/monitoring` | Live ops, incidents, event stream, emergency actions |
 | `/integrations` | API keys, webhooks, event logs, provider health |
 | `/integrations/setup` | Integration setup, event mapping, reward route, certification |
@@ -70,7 +70,11 @@ The design target is a dense, operational backoffice for CRM/Retention Managers 
 
 ### Campaign Creation
 
-The campaign builder supports setup, audience, rewards, budget, and review. The UX should prove that every campaign type can share a common wizard while still surfacing mechanic-specific configuration through contextual rails and module fields.
+The campaign builder supports setup, audience, logic, outcome, safety, and review. The UX should prove that every campaign type can share a common wizard while still surfacing mechanic-specific configuration through contextual rails and module fields.
+
+Audience selection now assumes MonoPulse uses platform/CRM-owned segments. MonoPulse does not create CRM segments in the campaign flow; it selects external segment IDs, applies campaign-only overlays, and shows cached/dynamic membership with source freshness.
+
+Cost preview now behaves as an async sandbox calculation. The UI should show status, source, environment and `lastCalculatedAt` instead of implying that reward cost is calculated on every API request.
 
 Important product question: which campaign mechanics truly require separate builder steps versus conditional fields inside shared steps?
 
@@ -101,9 +105,9 @@ Important product question: who owns failed fulfillment recovery: MonoPulse, the
 
 ### Segments
 
-Segments include reusable audience definitions, rule preview, exclusions, usage mapping, sync health and audit. This is critical because campaign creation depends on safe, reusable audiences.
+Segments are treated as platform/CRM-owned sources. MonoPulse keeps source mapping, cached audience counts, exclusions, usage mapping, sync health and audit. This is critical because campaign creation depends on safe, reusable external audiences without turning MonoPulse into a CRM product.
 
-Important product question: should segments be approved independently before campaigns can use them?
+Important product question: which segment data is read-only, which sync errors block launch, and what freshness level is acceptable for campaign approval?
 
 ### Player Profile
 
@@ -158,6 +162,7 @@ Backend and full-stack teams will likely care most about:
 - Permission model: role, brand scope, action scope.
 - Audit events: who did what, when, before/after values, reason notes.
 - Event ingestion: validation, delivery status, retries, quarantine, dead letter.
+- Async jobs and caches: segment sync, cost estimate, analytics snapshots, stale/fresh status.
 - Reward fulfillment: provider route, bonus GUID mapping, wallet payout, trigger response.
 - Risk gates: RG exclusions, KYC, jurisdiction, fraud, budget caps, liability caps.
 - Integration health: API keys, webhooks, providers, certification checks.
@@ -168,8 +173,8 @@ Backend and full-stack teams will likely care most about:
 - Data is static mock data.
 - Action submissions are UI-only and do not persist after refresh.
 - Permission roles are represented, but disabled/hidden states are not fully applied everywhere.
-- Empty, loading and error states are not consistently implemented yet.
-- Typecheck has pre-existing generated-code issues; production build passes.
+- Empty, loading and error states are represented for key routes but need API-backed coverage.
+- Typecheck and production build pass locally.
 - The app is desktop-first and needs a narrow viewport QA pass.
 
 ## Remaining Product Questions
@@ -182,8 +187,8 @@ Backend and full-stack teams will likely care most about:
 6. Which actions require mandatory audit notes?
 7. Which risk controls are jurisdiction-specific?
 8. Can campaigns run cross-brand, or only be visible org-wide while executing brand-scoped?
-9. Are segments approved globally, per brand, or per campaign use?
-10. What are the exact API contracts for bonus GUID lookup, reward creation and wallet payout?
+9. Which platform segment freshness states are acceptable for launch?
+10. What are the exact API contracts for bonus GUID lookup, reward creation, wallet payout, platform segment sync and async cost estimates?
 
 ## Suggested Next UX Work
 

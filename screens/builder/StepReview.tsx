@@ -42,7 +42,7 @@ export default function StepReview() {
         </div>
         <h2 className="mt-4 text-[18px] font-semibold tracking-tight">Campaign {draft.startDate ? 'scheduled' : 'launched'}</h2>
         <p className="mt-1.5 max-w-sm text-[13px] text-fg-secondary">
-          <span className="font-medium text-fg-primary">{draft.name}</span> is now {draft.startDate ? 'scheduled and will go live on its start date' : 'live'}. Monitor reward fulfillment in real time from the campaign detail.
+          <span className="font-medium text-fg-primary">{draft.name}</span> is now {draft.startDate ? 'scheduled and will go live on its start date' : 'live'}. Monitor reward fulfillment and cached delivery status from the campaign detail.
         </p>
         <div className="mt-6 flex items-center gap-3">
           <button onClick={() => navigate('/')} className="rounded-md px-4 py-2 text-[13px] font-semibold" style={{ background: 'var(--accent)', color: 'var(--accent-fg)' }}>

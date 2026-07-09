@@ -1,21 +1,21 @@
 import { useState } from 'react';
-import { Users, UserMinus, SlidersHorizontal, Database, Lock, CheckCircle2, Search, Sparkles } from 'lucide-react';
+import { Users, UserMinus, SlidersHorizontal, Database, Lock, CheckCircle2, Search, Sparkles, Clock3, ShieldCheck } from 'lucide-react';
 import { Section, Field, TagSelect, Toggle } from '../../components/builder/form';
 import { useCampaign } from '../../context/CampaignContext';
 import { TIERS, COUNTRIES, estimateAudience } from '../../data/validation';
 import { fmtNum } from '../../data/campaigns';
 
 const SEGMENT_LIBRARY = [
-  { name: 'New depositors', source: 'Platform', desc: 'First deposit completed in the selected campaign window.' },
-  { name: 'Reactivated', source: 'Platform', desc: 'Returned after a dormant period and recent login.' },
-  { name: 'Dormant 30d', source: 'Platform', desc: 'No qualifying activity for at least 30 days.' },
-  { name: 'KYC verified', source: 'Platform', desc: 'Identity and age checks verified by operator platform.' },
-  { name: 'Sports bettors', source: 'Platform', desc: 'Recent sportsbook activity across connected brands.' },
-  { name: 'High rollers', source: 'MonoPulse', desc: 'High value wager behavior detected across casino events.' },
-  { name: 'Weekend players', source: 'MonoPulse', desc: 'Usually active Friday through Sunday.' },
-  { name: 'Sports crossovers', source: 'MonoPulse', desc: 'Sports users likely to engage with casino campaigns.' },
-  { name: 'VIP watchlist', source: 'MonoPulse', desc: 'Operator-managed VIP audience with host context.' },
-  { name: 'Churn risk', source: 'MonoPulse', desc: 'Activity decline suggests likely churn without intervention.' },
+  { name: 'New depositors', source: 'Platform / CRM', freshness: 'Synced 18m ago', desc: 'First deposit completed in the selected campaign window.' },
+  { name: 'Reactivated', source: 'Platform / CRM', freshness: 'Synced 31m ago', desc: 'Returned after a dormant period and recent login.' },
+  { name: 'Dormant 30d', source: 'Platform / CRM', freshness: 'Synced 42m ago', desc: 'No qualifying activity for at least 30 days.' },
+  { name: 'KYC verified', source: 'Platform / CRM', freshness: 'Synced 14m ago', desc: 'Identity and age checks verified by operator platform.' },
+  { name: 'Sports bettors', source: 'Platform / CRM', freshness: 'Synced 25m ago', desc: 'Recent sportsbook activity across connected brands.' },
+  { name: 'High rollers', source: 'Platform / CRM', freshness: 'Synced 2h ago', desc: 'High value wager behavior provided by the operator segment feed.' },
+  { name: 'Weekend players', source: 'Platform / CRM', freshness: 'Synced 2h ago', desc: 'Usually active Friday through Sunday according to CRM segmentation.' },
+  { name: 'Sports crossovers', source: 'Platform / CRM', freshness: 'Synced 1h ago', desc: 'Sports users likely to engage with casino campaigns.' },
+  { name: 'VIP watchlist', source: 'Platform / CRM', freshness: 'Synced 11m ago', desc: 'Operator-managed VIP audience with host context.' },
+  { name: 'Churn risk', source: 'Platform / CRM', freshness: 'Synced 2h ago', desc: 'Activity decline suggests likely churn without intervention.' },
 ];
 const HARD_GATES = [
   'Self-excluded and cooling-off players',
@@ -45,20 +45,20 @@ export default function StepAudience() {
       <div>
         <h2 className="text-[16px] font-semibold tracking-tight">Audience Scope</h2>
         <p className="mt-1 text-[13px] text-fg-secondary">
-          Define who is allowed to enter the campaign. Mission completion rules are configured separately in Mission Logic.
+          Choose platform/CRM-owned audience segments for the campaign. MonoPulse reads segment membership, then applies mission logic and reward outcomes separately.
         </p>
       </div>
 
       <div className="grid grid-cols-3 gap-4">
-        <Metric icon={Users} label="Estimated reach" value={fmtNum(aud.size)} detail="eligible after selected scope" accent />
+        <Metric icon={Users} label="Cached reach" value={fmtNum(aud.size)} detail="from latest platform segment snapshot" accent />
         <Metric icon={UserMinus} label="Excluded" value={fmtNum(aud.excluded)} detail="risk, RG and hard gates" />
-        <Metric icon={Database} label="Selected segments" value={`${selectedSegments.length}`} detail={`${segmentSourceCount || 0} source${segmentSourceCount === 1 ? '' : 's'} represented`} />
+        <Metric icon={Database} label="Selected segments" value={`${selectedSegments.length}`} detail={`${segmentSourceCount || 0} platform source${segmentSourceCount === 1 ? '' : 's'} represented`} />
       </div>
 
       <Section
         icon={SlidersHorizontal}
-        title="Segment library"
-        desc="Search reusable audiences by business meaning. Source is shown as context, not something operators need to configure."
+        title="Platform segment selector"
+        desc="Select existing platform/CRM segments. MonoPulse does not create CRM segments in this flow."
         aside={<ModeControl value={mode} onChange={setMode} />}
       >
         <SegmentLibrary query={query} onQuery={setQuery} selected={draft.segments} onToggle={(v) => toggle('segments', v)} />
@@ -68,12 +68,12 @@ export default function StepAudience() {
             Current boolean rule
           </div>
           <p className="mt-1 text-[12px] leading-relaxed text-fg-secondary">
-            Player must match <span className="font-semibold text-fg-primary">{mode}</span> selected segment criteria across platform and MonoPulse sources before mission logic can start tracking progress.
+            Player must match <span className="font-semibold text-fg-primary">{mode}</span> selected platform segment criteria before mission logic can start tracking progress. Segment membership remains dynamic as the platform feed changes.
           </p>
         </div>
       </Section>
 
-      <Section icon={Users} title="Eligibility filters" desc="Filter eligible players after segment membership is resolved.">
+      <Section icon={Users} title="Campaign eligibility overlays" desc="Campaign-only filters applied after platform segment membership is resolved.">
         <div className="flex flex-col gap-4">
           <Field label="Loyalty tier">
             <TagSelect options={TIERS} selected={draft.tiers} onToggle={(v) => toggle('tiers', v)} />
@@ -88,6 +88,14 @@ export default function StepAudience() {
         </div>
       </Section>
 
+      <Section icon={ShieldCheck} title="Data ownership and freshness" desc="Make the backend contract explicit before launch configuration continues.">
+        <div className="grid grid-cols-3 gap-3">
+          <FreshnessCard label="Segment owner" value="Platform / CRM" detail="Read-only in MonoPulse" />
+          <FreshnessCard label="Audience mode" value="Dynamic" detail="Membership can change after launch" />
+          <FreshnessCard label="Count freshness" value="Cached" detail="Snapshot shown with sync time" />
+        </div>
+      </Section>
+
       <Section icon={Lock} title="Mandatory hard gates" desc="These exclusions are not campaign choices. They are enforced before the audience becomes eligible.">
         <div className="grid grid-cols-2 gap-3">
           {HARD_GATES.map((gate) => (
@@ -98,6 +106,18 @@ export default function StepAudience() {
           ))}
         </div>
       </Section>
+    </div>
+  );
+}
+
+function FreshnessCard({ label, value, detail }: { label: string; value: string; detail: string }) {
+  return (
+    <div className="rounded-lg border px-3.5 py-3" style={{ borderColor: 'var(--border-subtle)', background: 'var(--surface-2)' }}>
+      <div className="flex items-center gap-1.5 text-[10.5px] font-semibold uppercase tracking-wider text-fg-muted">
+        <Clock3 size={12} strokeWidth={2} /> {label}
+      </div>
+      <div className="mt-1.5 text-[13px] font-semibold text-fg-primary">{value}</div>
+      <div className="mt-0.5 text-[11.5px] text-fg-secondary">{detail}</div>
     </div>
   );
 }
@@ -178,6 +198,10 @@ function SegmentLibrary({
                 <div className="min-w-0">
                   <div className="text-[13px] font-semibold text-fg-primary">{segment.name}</div>
                   <p className="mt-1 line-clamp-2 text-[12px] leading-5 text-fg-secondary">{segment.desc}</p>
+                  <div className="mt-2 flex items-center gap-1.5 text-[11px] text-fg-muted">
+                    <Clock3 size={11} strokeWidth={2} />
+                    {segment.freshness}
+                  </div>
                 </div>
                 <span className="shrink-0 rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide" style={{ background: 'var(--surface-3)', color: 'var(--fg-muted)' }}>
                   {segment.source}

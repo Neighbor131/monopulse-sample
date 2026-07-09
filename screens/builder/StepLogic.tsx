@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import {
-  GitBranch, Plus, Trash2, Check, AlertTriangle, Zap, Loader, TrendingUp, Coins, X,
+  GitBranch, Plus, Trash2, Check, AlertTriangle, Zap, Loader, TrendingUp, Coins, X, Clock3,
   Workflow, ShieldCheck, ListChecks, MousePointerClick, UserCheck, Gift,
 } from 'lucide-react';
 import { Section, Select } from '../../components/builder/form';
@@ -350,12 +350,15 @@ function EvaluationPreview({ mode }: { mode: string }) {
   const validRules = draft.rules.filter((r) => ruleErrors(r).length === 0).length;
   return (
     <div className="rounded-xl border p-4" style={{ borderColor: 'var(--border-subtle)', background: 'var(--surface-1)' }}>
-      <div className="text-[10.5px] font-semibold uppercase tracking-wider text-fg-muted">Evaluation preview</div>
+      <div className="text-[10.5px] font-semibold uppercase tracking-wider text-fg-muted">Sandbox evaluation preview</div>
       <div className="mt-3 grid grid-cols-2 gap-3">
         <RailMetric label="Mode" value={mode} />
         <RailMetric label="Valid rules" value={`${validRules}/${draft.rules.length}`} />
         <RailMetric label="Matched events" value={fmtNum(live.matchedEvents)} mono />
         <RailMetric label="Matched players" value={fmtNum(live.matchedPlayers)} mono />
+      </div>
+      <div className="mt-3 rounded-md px-3 py-2 text-[11.5px] leading-5 text-fg-secondary" style={{ background: 'var(--surface-2)' }}>
+        Uses mock/sandbox event history. Production cost calculations are queued and cached so campaign APIs stay responsive.
       </div>
     </div>
   );
@@ -392,8 +395,8 @@ function RuleTestPanel() {
   const { draft } = useCampaign();
   const [state, setState] = useState<'idle' | 'running' | 'done'>('idle');
   const [result, setResult] = useState<RuleTest | null>(null);
-  const live = testRules(draft);
-  const canTest = draft.rules.some((r) => ruleErrors(r).length === 0) && live.matchedPlayers > 0;
+  const asyncEstimate = testRules(draft);
+  const canTest = draft.rules.some((r) => ruleErrors(r).length === 0) && asyncEstimate.matchedPlayers > 0;
 
   const run = () => {
     setState('running');
@@ -405,7 +408,10 @@ function RuleTestPanel() {
       <div className="flex items-center justify-between gap-3 border-b px-5 py-3" style={{ borderColor: 'var(--border-subtle)' }}>
         <div className="flex items-center gap-2">
           <TrendingUp size={15} strokeWidth={2} className="text-fg-secondary" />
-          <h3 className="text-[13.5px] font-semibold text-fg-primary">Backtest & cost preview</h3>
+          <div>
+            <h3 className="text-[13.5px] font-semibold text-fg-primary">Sandbox calculation & cost estimate</h3>
+            <p className="mt-0.5 text-[11.5px] text-fg-secondary">Queued estimate used for UX validation before staging/prod integration.</p>
+          </div>
         </div>
         <button
           onClick={run}
@@ -414,7 +420,7 @@ function RuleTestPanel() {
           style={canTest && state !== 'running' ? { background: 'var(--accent)', color: 'var(--accent-fg)' } : { background: 'var(--surface-3)', color: 'var(--fg-muted)', cursor: 'not-allowed' }}
         >
           {state === 'running' ? <Loader size={14} className="animate-spin" strokeWidth={2} /> : <Zap size={14} strokeWidth={2} />}
-          {state === 'running' ? 'Running...' : 'Test last 7 days'}
+          {state === 'running' ? 'Queued...' : 'Run sandbox calculation'}
         </button>
       </div>
 
@@ -422,20 +428,30 @@ function RuleTestPanel() {
         <div className="flex items-center justify-between gap-4 rounded-lg border px-4 py-3" style={{ borderColor: 'var(--accent-border)', background: 'var(--accent-bg)' }}>
           <div className="flex items-center gap-2">
             <Coins size={15} style={{ color: 'var(--accent)' }} strokeWidth={2} />
-            <span className="text-[12.5px] font-medium text-fg-primary">Estimated reward cost after completion</span>
+            <div>
+              <span className="block text-[12.5px] font-medium text-fg-primary">Estimated reward cost</span>
+              <span className="block text-[11px] text-fg-secondary">Async calculation result, not a per-request API calculation.</span>
+            </div>
           </div>
           <div className="text-right">
             <div className="font-mono text-[18px] font-semibold leading-none tabular-nums text-fg-primary">
-              {canTest ? fmtMoney(live.estimatedCost, draft.currency) : '-'}
+              {canTest ? fmtMoney(asyncEstimate.estimatedCost, draft.currency) : '-'}
             </div>
-            <div className="mt-0.5 text-[11px] text-fg-muted">{canTest ? `~${fmtNum(live.projectedGrants)} projected completions` : 'add a valid rule to estimate'}</div>
+            <div className="mt-0.5 text-[11px] text-fg-muted">{canTest ? `~${fmtNum(asyncEstimate.projectedGrants)} projected completions` : 'add a valid rule to queue estimate'}</div>
           </div>
+        </div>
+
+        <div className="mt-3 grid grid-cols-4 gap-2">
+          <AsyncMeta label="Status" value={state === 'running' ? 'Queued' : state === 'done' ? 'Calculated' : canTest ? 'Ready to queue' : 'Waiting for rules'} tone={state === 'done' ? 'success' : canTest ? 'warning' : 'muted'} />
+          <AsyncMeta label="Last calculated" value={state === 'done' ? 'just now' : '2h ago'} />
+          <AsyncMeta label="Source" value="async_cost_job" mono />
+          <AsyncMeta label="Environment" value="mock API" />
         </div>
 
         {state === 'done' && result && (
           <div className="mt-4">
             <div className="mb-2 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-fg-muted">
-              <Check size={12} style={{ color: 'var(--success)' }} strokeWidth={2.5} /> Simulated against live event history
+              <Check size={12} style={{ color: 'var(--success)' }} strokeWidth={2.5} /> Sandbox job completed against cached event history
             </div>
             <div className="grid grid-cols-4 gap-3">
               <Metric label="Matching events" value={fmtNum(result.matchedEvents)} />
@@ -446,6 +462,18 @@ function RuleTestPanel() {
           </div>
         )}
       </div>
+    </div>
+  );
+}
+
+function AsyncMeta({ label, value, tone = 'muted', mono }: { label: string; value: string; tone?: 'success' | 'warning' | 'muted'; mono?: boolean }) {
+  const color = tone === 'success' ? 'var(--success)' : tone === 'warning' ? 'var(--warning)' : 'var(--fg-secondary)';
+  return (
+    <div className="rounded-lg border px-3 py-2.5" style={{ borderColor: 'var(--border-subtle)', background: 'var(--surface-2)' }}>
+      <div className="flex items-center gap-1.5 text-[10.5px] font-medium uppercase tracking-wide text-fg-muted">
+        <Clock3 size={11} strokeWidth={2} /> {label}
+      </div>
+      <div className={`mt-1 text-[12.5px] font-semibold ${mono ? 'font-mono' : ''}`} style={{ color }}>{value}</div>
     </div>
   );
 }

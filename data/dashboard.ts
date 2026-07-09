@@ -67,6 +67,7 @@ export interface MoneyKpi {
   label: string;
   value: string;
   detail: string;
+  freshness: string;
   tone: 'good' | 'warning' | 'danger' | 'neutral';
   trend: number[];
   href: string;
@@ -138,12 +139,12 @@ export function moneyKpis(): MoneyKpi[] {
   const atRisk = pendingLiability + openGrantValue + CAMPAIGNS.filter((campaign) => campaign.risk !== 'none').reduce((sum, campaign) => sum + Math.max(0, campaign.rewardCost), 0);
 
   return [
-    { id: 'ngr', label: 'Projected NGR', value: money(projectedNgr), detail: '+12.4% vs prior campaign cycle', tone: 'good', trend: [42, 46, 44, 51, 56, 62, 68, 72], href: '/analytics' },
-    { id: 'cost', label: 'Reward cost', value: money(rewardCost), detail: `${Math.round((rewardCost / totalBudget) * 100)}% of approved campaign budget`, tone: 'warning', trend: [18, 24, 31, 38, 42, 46, 49, 51], href: '/' },
-    { id: 'liability', label: 'Open liability', value: money(pendingLiability), detail: `${REWARDS.filter((reward) => reward.pendingLiability > 0).length} reward objects carry exposure`, tone: 'warning', trend: [30, 36, 41, 39, 52, 48, 58, 55], href: '/rewards' },
-    { id: 'remaining', label: 'Budget remaining', value: money(totalBudget - usedBudget), detail: `${money(usedBudget)} used from ${money(totalBudget)}`, tone: 'neutral', trend: [86, 80, 74, 69, 63, 57, 52, 47], href: '/ops' },
-    { id: 'roi', label: 'Blended ROI', value: `${roi.toFixed(1)}x`, detail: 'projected NGR divided by reward cost + liability', tone: 'good', trend: [38, 43, 45, 44, 49, 53, 57, 61], href: '/analytics' },
-    { id: 'risk', label: 'Money at risk', value: money(atRisk), detail: 'blocked grants, open liability and risky campaign spend', tone: 'danger', trend: [28, 35, 32, 41, 55, 52, 64, 70], href: '/safety' },
+    { id: 'ngr', label: 'Projected NGR', value: money(projectedNgr), detail: '+12.4% vs prior campaign cycle', freshness: 'Analytics snapshot - updated 09:30', tone: 'good', trend: [42, 46, 44, 51, 56, 62, 68, 72], href: '/analytics' },
+    { id: 'cost', label: 'Reward cost', value: money(rewardCost), detail: `${Math.round((rewardCost / totalBudget) * 100)}% of approved campaign budget`, freshness: 'Async cost job - calculated 2h ago', tone: 'warning', trend: [18, 24, 31, 38, 42, 46, 49, 51], href: '/' },
+    { id: 'liability', label: 'Open liability', value: money(pendingLiability), detail: `${REWARDS.filter((reward) => reward.pendingLiability > 0).length} reward objects carry exposure`, freshness: 'Reward ledger cache - updated 09:30', tone: 'warning', trend: [30, 36, 41, 39, 52, 48, 58, 55], href: '/rewards' },
+    { id: 'remaining', label: 'Budget remaining', value: money(totalBudget - usedBudget), detail: `${money(usedBudget)} used from ${money(totalBudget)}`, freshness: 'Budget snapshot - updated 09:30', tone: 'neutral', trend: [86, 80, 74, 69, 63, 57, 52, 47], href: '/ops' },
+    { id: 'roi', label: 'Blended ROI', value: `${roi.toFixed(1)}x`, detail: 'projected NGR divided by reward cost + liability', freshness: 'Analytics snapshot - updated 09:30', tone: 'good', trend: [38, 43, 45, 44, 49, 53, 57, 61], href: '/analytics' },
+    { id: 'risk', label: 'Money at risk', value: money(atRisk), detail: 'blocked grants, open liability and risky campaign spend', freshness: 'Async risk job - calculated 2h ago', tone: 'danger', trend: [28, 35, 32, 41, 55, 52, 64, 70], href: '/safety' },
   ];
 }
 

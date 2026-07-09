@@ -49,7 +49,7 @@ export default function Dashboard() {
             {moneyAtRisk && <SeverityPill severity={moneyAtRisk.tone === 'danger' ? 'critical' : moneyAtRisk.tone === 'warning' ? 'warning' : 'healthy'} label="Today" />}
           </div>
           <p className="mt-1 max-w-3xl text-[13px] leading-relaxed text-fg-secondary">
-            Commercial control view for NGR, reward cost, open liability, budget burn and the actions that protect margin today.
+            Commercial control view for NGR, reward cost, open liability, budget burn and the actions that protect margin today. Values are cached snapshots with visible calculation freshness.
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -212,6 +212,7 @@ function MoneyKpiCard({ kpi, onOpen }: { kpi: MoneyKpi; onOpen: () => void }) {
         <Sparkline values={kpi.trend} tone={kpi.tone} />
       </div>
       <div className="mt-1 line-clamp-2 text-[11.5px]" style={{ color: toneColor(kpi.tone) }}>{kpi.detail}</div>
+      <div className="mt-2 rounded-md px-2 py-1 text-[10.5px] font-medium text-fg-muted" style={{ background: 'var(--surface-2)' }}>{kpi.freshness}</div>
     </button>
   );
 }

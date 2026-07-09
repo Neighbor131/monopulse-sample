@@ -61,7 +61,7 @@ export default function Segments() {
   const tabs: { id: TabId; label: string; count?: number }[] = [
     { id: 'overview', label: 'Overview' },
     { id: 'library', label: 'Segment library', count: SEGMENTS.length },
-    { id: 'builder', label: 'Rule builder' },
+    { id: 'builder', label: 'Source mapping' },
     { id: 'exclusions', label: 'Exclusions', count: SEGMENTS.filter((s) => s.exclusions.length > 0).length },
     { id: 'usage', label: 'Usage map', count: kpis.usageLinks },
     { id: 'sync', label: 'Sync health', count: SEGMENTS.filter((s) => s.health !== 'healthy').length },
@@ -76,21 +76,21 @@ export default function Segments() {
             <h1 className="text-[19px] font-semibold tracking-tight">Segments</h1>
             <Pill label={`${kpis.blocked} blockers`} tone={kpis.blocked > 0 ? 'danger' : 'success'} />
           </div>
-          <p className="mt-1 text-[13px] text-fg-secondary">Build reusable audiences for campaigns, loyalty, rewards, exclusions and A/B testing across brands.</p>
+          <p className="mt-1 text-[13px] text-fg-secondary">Review platform/CRM-owned audience segments used by campaigns. MonoPulse stores mapping, sync health, usage and cached counts.</p>
         </div>
         <div className="flex items-center gap-2">
           <button onClick={() => setAction({ kind: 'recalculateSegments', context: `${SEGMENTS.length} segment definitions` })} className="flex items-center gap-1.5 rounded-md px-3 py-2 text-[13px] font-semibold" style={{ background: 'var(--surface-3)', color: 'var(--fg-secondary)', border: '1px solid var(--border-strong)' }}>
-            <Refresh2 size={15} variant="Linear" /> Recalculate
+            <Refresh2 size={15} variant="Linear" /> Refresh cache
           </button>
           <button onClick={() => { setTab('builder'); setBuilderOpen(true); }} className="flex items-center gap-1.5 rounded-md px-3.5 py-2 text-[13px] font-semibold" style={{ background: 'var(--accent)', color: 'var(--accent-fg)' }}>
-            <Add size={15} variant="Linear" /> New segment
+            <Add size={15} variant="Linear" /> Register source
           </button>
         </div>
       </div>
 
       <div className="mt-5 grid grid-cols-6 gap-3">
-        <Kpi icon={People} label="Active segments" value={String(kpis.active)} />
-        <Kpi icon={Profile2User} label="Total audience" value={kpis.totalPlayers.toLocaleString()} />
+        <Kpi icon={People} label="Active sources" value={String(kpis.active)} />
+        <Kpi icon={Profile2User} label="Cached audience" value={kpis.totalPlayers.toLocaleString()} />
         <Kpi icon={Warning2} label="Warnings" value={String(kpis.warnings)} accent="var(--warning)" />
         <Kpi icon={SecuritySafe} label="Blocked" value={String(kpis.blocked)} accent="var(--danger)" />
         <Kpi icon={ShieldTick} label="Suppressed players" value={kpis.suppression.toLocaleString()} />
@@ -145,7 +145,7 @@ function Overview({ setTab, setDetail }: { setTab: (t: TabId) => void; setDetail
   return (
     <div className="grid gap-4">
       <div className="grid grid-cols-4 gap-3">
-        <RailAction icon={FilterSearch} label="Rule builder" value="Preview logic" onClick={() => setTab('builder')} />
+        <RailAction icon={FilterSearch} label="Source mapping" value="Read-only feeds" onClick={() => setTab('builder')} />
         <RailAction icon={SecuritySafe} label="Exclusions" value={`${SEGMENTS.filter((s) => s.exclusions.length > 0).length} segments`} onClick={() => setTab('exclusions')} />
         <RailAction icon={Diagram} label="Usage map" value={`${segmentKpis().usageLinks} links`} onClick={() => setTab('usage')} />
         <RailAction icon={Data} label="Sync health" value={`${SEGMENTS.filter((s) => s.health !== 'healthy').length} issues`} onClick={() => setTab('sync')} />
@@ -153,7 +153,7 @@ function Overview({ setTab, setDetail }: { setTab: (t: TabId) => void; setDetail
       <section className="overflow-hidden rounded-xl border" style={{ borderColor: 'var(--border-subtle)', background: 'var(--surface-1)' }}>
         <div className="border-b px-5 py-3" style={{ borderColor: 'var(--border-subtle)' }}>
           <h2 className="text-[14px] font-semibold text-fg-primary">Audience readiness</h2>
-          <p className="mt-0.5 text-[12.5px] text-fg-secondary">Reusable segments, eligibility health and audience movement.</p>
+          <p className="mt-0.5 text-[12.5px] text-fg-secondary">Platform segments, cached counts, sync health and audience movement.</p>
         </div>
         <div className="overflow-x-auto">
           <div className="min-w-[760px] divide-y" style={{ borderColor: 'var(--border-subtle)' }}>
@@ -199,10 +199,10 @@ function BuilderPreview({ setDetail, onCreate }: { setDetail: (d: Detail) => voi
         <div className="border-b px-5 py-3" style={{ borderColor: 'var(--border-subtle)' }}>
           <div className="flex items-start justify-between gap-3">
             <div>
-              <h2 className="text-[14px] font-semibold text-fg-primary">Rule builder workspace</h2>
-              <p className="mt-0.5 text-[12.5px] text-fg-secondary">A designable rule stack for audience logic, exclusions and preview counts.</p>
+              <h2 className="text-[14px] font-semibold text-fg-primary">Platform source mapping</h2>
+              <p className="mt-0.5 text-[12.5px] text-fg-secondary">Register external segment IDs, preview cached counts and confirm mandatory exclusion gates.</p>
             </div>
-            <button onClick={onCreate} className="flex items-center gap-1.5 rounded-md px-3 py-2 text-[12.5px] font-semibold" style={{ background: 'var(--accent)', color: 'var(--accent-fg)' }}><Add size={14} variant="Linear" /> Build segment</button>
+            <button onClick={onCreate} className="flex items-center gap-1.5 rounded-md px-3 py-2 text-[12.5px] font-semibold" style={{ background: 'var(--accent)', color: 'var(--accent-fg)' }}><Add size={14} variant="Linear" /> Register source</button>
           </div>
         </div>
         <div className="p-5">
@@ -213,7 +213,7 @@ function BuilderPreview({ setDetail, onCreate }: { setDetail: (d: Detail) => voi
             </div>
             <div className="mt-4 grid gap-2">
               {selected.rules.map((r, i) => <RuleRow key={r.id} join={i === 0 ? 'WHERE' : 'AND'} label={r.label} operator={r.operator} value={r.value} />)}
-              <RuleRow join="EXCLUDE" label="Mandatory risk gates" operator="include" value={selected.exclusions.join(', ')} tone="danger" />
+              <RuleRow join="GATES" label="Mandatory risk gates" operator="applied after sync" value={selected.exclusions.join(', ')} tone="danger" />
             </div>
           </div>
         </div>
@@ -224,7 +224,7 @@ function BuilderPreview({ setDetail, onCreate }: { setDetail: (d: Detail) => voi
 }
 
 function SegmentBuilderDrawer({ open, onClose }: { open: boolean; onClose: () => void }) {
-  const [name, setName] = useState('High intent reactivation');
+  const [name, setName] = useState('platform.segment.high_intent_reactivation');
   const [type, setType] = useState<SegmentType>('dynamic');
   const [brandMode, setBrandMode] = useState<'selected' | 'all'>('selected');
   const [logic, setLogic] = useState<'all' | 'any'>('all');
@@ -251,8 +251,8 @@ function SegmentBuilderDrawer({ open, onClose }: { open: boolean; onClose: () =>
             <div className="flex items-center gap-2">
               <span className="flex h-8 w-8 items-center justify-center rounded-lg" style={{ background: 'var(--accent-bg)', color: 'var(--accent)' }}><FilterSearch size={17} variant="Linear" /></span>
               <div>
-                <div className="text-[16px] font-semibold text-fg-primary">Create segment</div>
-                <div className="mt-0.5 text-[12px] text-fg-secondary">Reusable audience for campaigns, loyalty, rewards and risk gates.</div>
+                <div className="text-[16px] font-semibold text-fg-primary">Register platform segment source</div>
+                <div className="mt-0.5 text-[12px] text-fg-secondary">Map an external CRM/platform segment to campaigns, rewards and safety gates.</div>
               </div>
             </div>
           </div>
@@ -264,14 +264,14 @@ function SegmentBuilderDrawer({ open, onClose }: { open: boolean; onClose: () =>
             <div className="flex flex-col gap-4">
               <DrawerSection title="Basics">
                 <div className="grid grid-cols-2 gap-3">
-                  <Field label="Segment name"><input value={name} onChange={(e) => setName(e.target.value)} className="field-input" /></Field>
-                  <Field label="Type">
+                  <Field label="External segment ID"><input value={name} onChange={(e) => setName(e.target.value)} className="field-input" /></Field>
+                  <Field label="Source type">
                     <select value={type} onChange={(e) => setType(e.target.value as SegmentType)} className="field-input">
                       {(Object.keys(TYPE_LABEL) as SegmentType[]).map((t) => <option key={t} value={t}>{TYPE_LABEL[t]}</option>)}
                     </select>
                   </Field>
-                  <Field label="Owner"><input defaultValue="Retention Lead" className="field-input" /></Field>
-                  <Field label="Refresh cadence"><select className="field-input"><option>Every 15 minutes</option><option>Hourly</option><option>Manual only</option></select></Field>
+                  <Field label="Owner"><input defaultValue="Platform / CRM" className="field-input" /></Field>
+                  <Field label="Cache cadence"><select className="field-input"><option>Every 15 minutes</option><option>Hourly</option><option>Manual only</option></select></Field>
                 </div>
               </DrawerSection>
 
@@ -289,7 +289,7 @@ function SegmentBuilderDrawer({ open, onClose }: { open: boolean; onClose: () =>
                 <div className="mt-3 flex flex-wrap gap-2">{BRANDS.map((b) => <span key={b.code} className="rounded-md border px-2.5 py-1 text-[12px]" style={{ borderColor: selectedBrands.includes(b.code) || brandMode === 'all' ? 'var(--accent-border)' : 'var(--border-subtle)', background: selectedBrands.includes(b.code) || brandMode === 'all' ? 'var(--accent-bg)' : 'var(--surface-2)', color: 'var(--fg-secondary)' }}>{b.code} · {b.name}</span>)}</div>
               </DrawerSection>
 
-              <DrawerSection title="Rule logic">
+              <DrawerSection title="Source criteria preview">
                 <div className="mb-3 inline-flex rounded-md border p-1" style={{ borderColor: 'var(--border-subtle)', background: 'var(--surface-2)' }}>
                   {(['all', 'any'] as const).map((m) => <button key={m} onClick={() => setLogic(m)} className="rounded px-3 py-1.5 text-[12px] font-semibold" style={logic === m ? { background: 'var(--accent)', color: 'var(--accent-fg)' } : { color: 'var(--fg-muted)' }}>{m === 'all' ? 'Match all rules' : 'Match any rule'}</button>)}
                 </div>
@@ -304,7 +304,7 @@ function SegmentBuilderDrawer({ open, onClose }: { open: boolean; onClose: () =>
                     </div>
                   ))}
                 </div>
-                <button onClick={addRule} className="mt-3 flex items-center gap-1.5 rounded-md px-3 py-2 text-[12.5px] font-semibold" style={{ background: 'var(--surface-3)', color: 'var(--fg-secondary)', border: '1px solid var(--border-strong)' }}><Add size={14} variant="Linear" /> Add rule</button>
+                <button onClick={addRule} className="mt-3 flex items-center gap-1.5 rounded-md px-3 py-2 text-[12.5px] font-semibold" style={{ background: 'var(--surface-3)', color: 'var(--fg-secondary)', border: '1px solid var(--border-strong)' }}><Add size={14} variant="Linear" /> Add source field</button>
               </DrawerSection>
 
               <DrawerSection title="Mandatory safety gates">
@@ -321,7 +321,7 @@ function SegmentBuilderDrawer({ open, onClose }: { open: boolean; onClose: () =>
               <section className="rounded-xl border p-4" style={{ borderColor: 'var(--accent-border)', background: 'var(--accent-bg)' }}>
                 <div className="flex items-center gap-2 text-[10.5px] font-semibold uppercase tracking-wider" style={{ color: 'var(--accent)' }}><ChartSuccess size={14} variant="Linear" /> Preview result</div>
                 <div className="mt-3 font-mono text-[30px] font-semibold leading-none text-fg-primary">{eligible.toLocaleString()}</div>
-                <div className="mt-1 text-[12px] text-fg-secondary">eligible players after safety gates</div>
+                <div className="mt-1 text-[12px] text-fg-secondary">cached eligible players after safety gates</div>
                 <div className="mt-3 grid grid-cols-2 gap-2">
                   <MiniStat label="Excluded" value={excluded.toLocaleString()} />
                   <MiniStat label="Overlap" value="17%" />
@@ -344,10 +344,10 @@ function SegmentBuilderDrawer({ open, onClose }: { open: boolean; onClose: () =>
 
         <div className="border-t px-6 py-3.5" style={{ borderColor: 'var(--border-subtle)' }}>
           <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-2 text-[12px] text-fg-secondary"><TickCircle size={15} variant="Bold" color="var(--success)" /> Draft can be saved. One warning requires review before activation.</div>
+              <div className="flex items-center gap-2 text-[12px] text-fg-secondary"><TickCircle size={15} variant="Bold" color="var(--success)" /> Mapping can be saved. One warning requires review before activation.</div>
             <div className="flex gap-2">
-              <Action icon={ArchiveBook} label="Save draft" />
-              <Action icon={Refresh2} label="Recalculate preview" />
+              <Action icon={ArchiveBook} label="Save mapping" />
+              <Action icon={Refresh2} label="Refresh preview cache" />
               <button className="flex items-center gap-1.5 rounded-md px-3 py-2 text-[12.5px] font-semibold" style={{ background: 'var(--accent)', color: 'var(--accent-fg)' }}><ShieldTick size={13} variant="Linear" /> Submit approval</button>
             </div>
           </div>

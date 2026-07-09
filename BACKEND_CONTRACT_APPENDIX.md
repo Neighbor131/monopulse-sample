@@ -91,12 +91,12 @@ Backend questions:
 - Does a sensitive edit reset approval automatically?
 - Which fields are sensitive enough to invalidate prior approval?
 
-## Segment Recalculation
+## Platform Segment Sync
 
 Endpoint:
 
 ```http
-POST /segments/recalculate
+POST /segments/sync
 ```
 
 Example payload:
@@ -104,9 +104,10 @@ Example payload:
 ```json
 {
   "segmentIds": ["seg-high-value-active", "seg-churn-risk-14d"],
-  "preview": true,
-  "notifyOwners": "blockers_only",
-  "auditReason": "Manual recalculation before campaign launch"
+  "source": "operator_crm",
+  "environment": "sandbox",
+  "refreshMode": "cache_only",
+  "auditReason": "Refresh cached segment counts before campaign launch"
 }
 ```
 
@@ -114,15 +115,18 @@ Example response:
 
 ```json
 {
-  "runId": "seg-run-9441",
-  "status": "completed",
+  "syncRunId": "seg-sync-9441",
+  "status": "queued",
+  "cacheStatus": "stale_while_revalidating",
   "results": [
     {
       "segmentId": "seg-high-value-active",
+      "sourceSegmentId": "platform.segment.high_value_active",
       "previousCount": 5218,
-      "newCount": 5564,
+      "cachedCount": 5564,
       "excludedPlayers": 312,
-      "health": "healthy"
+      "health": "healthy",
+      "lastCalculatedAt": "2026-07-09T07:30:00Z"
     }
   ],
   "auditEventId": "aud-seg-7120"
@@ -131,9 +135,55 @@ Example response:
 
 Backend questions:
 
-- Are segment counts eventually consistent or blocking?
-- What is the max acceptable recalculation time?
+- Which platform/CRM source owns each segment?
+- Are segment counts eventually consistent, cached, delayed or stale-while-revalidating?
 - Are player IDs returned to the UI, or only aggregate counts?
+- What fields identify data freshness: `lastCalculatedAt`, `nextCalculationAt`, `cacheStatus`, `source`, `environment`?
+
+## Async Cost Estimate
+
+Endpoint:
+
+```http
+POST /campaigns/{campaignId}/cost-estimates
+```
+
+Example payload:
+
+```json
+{
+  "campaignId": "cmp-draft-1042",
+  "environment": "sandbox",
+  "segmentIds": ["seg-high-value-active"],
+  "ruleSetVersion": "rules-v3",
+  "requestedBy": "usr-mara",
+  "auditReason": "Sandbox estimate before launch review"
+}
+```
+
+Example response:
+
+```json
+{
+  "estimateJobId": "cost-job-7719",
+  "status": "queued",
+  "source": "async_cost_job",
+  "lastCalculatedAt": "2026-07-09T05:30:00Z",
+  "nextCalculationAt": "2026-07-09T08:30:00Z",
+  "cachedEstimate": {
+    "projectedGrants": 1840,
+    "estimatedRewardCost": 55200,
+    "currency": "EUR"
+  }
+}
+```
+
+Backend questions:
+
+- What estimate statuses should UI support: queued, calculating, complete, stale, failed?
+- Is cost recalculated on a fixed cadence, on demand, or both?
+- Which values are safe to expose from the API without slowing campaign operations?
+- Which analytics belong in a separate async/event-queue tool rather than the transactional backoffice API?
 
 ## Reward Creation
 

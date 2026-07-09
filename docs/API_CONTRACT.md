@@ -167,12 +167,12 @@ Sensitive actions require permission and audit notes.
 
 | Method | Endpoint | Purpose |
 | --- | --- | --- |
-| `GET` | `/api/segments` | Segment library |
-| `POST` | `/api/segments` | Create segment |
-| `GET` | `/api/segments/{segmentId}` | Segment detail |
-| `PATCH` | `/api/segments/{segmentId}` | Update segment |
-| `POST` | `/api/segments/{segmentId}/preview` | Preview audience count |
-| `POST` | `/api/segments/{segmentId}/recalculate` | Recalculate |
+| `GET` | `/api/segments` | Platform/CRM segment registry |
+| `POST` | `/api/segments/sync` | Refresh cached segment source data |
+| `GET` | `/api/segments/{segmentId}` | Segment source detail |
+| `PATCH` | `/api/segments/{segmentId}/mapping` | Update MonoPulse source mapping |
+| `POST` | `/api/segments/{segmentId}/preview` | Return cached audience count and freshness |
+| `POST` | `/api/campaigns/{campaignId}/cost-estimates` | Queue async cost estimate |
 
 ## Rewards
 

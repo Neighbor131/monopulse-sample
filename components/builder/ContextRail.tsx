@@ -181,7 +181,7 @@ export default function ContextRail() {
       </div>
 
       <p className="mt-3 px-1 text-[11px] leading-relaxed text-fg-muted">
-        This summary updates live as you build. Every launch decision is grounded in these eight signals.
+        This summary updates as you configure the draft. Every launch decision is grounded in these eight signals.
       </p>
 
       {type && mechanicSections.length > 0 && (
