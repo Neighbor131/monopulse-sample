@@ -26,6 +26,7 @@ import Analytics from './screens/Analytics';
 import Notifications from './screens/Notifications';
 import AuditLog from './screens/AuditLog';
 import MechanicConfig from './screens/MechanicConfig';
+import LeaderboardBuilder from './screens/LeaderboardBuilder';
 
 export default function AppRoutes() {
   return (
@@ -44,6 +45,7 @@ export default function AppRoutes() {
       <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} />
       <Route path="/create" element={<Layout><CampaignTypePicker /></Layout>} />
       <Route path="/builder/:step" element={<Layout><CampaignBuilder /></Layout>} />
+      <Route path="/leaderboard/:step" element={<Layout><LeaderboardBuilder /></Layout>} />
       <Route path="/loyalty" element={<Layout><Loyalty /></Layout>} />
       <Route path="/loyalty/builder/:step" element={<Layout><ProgramBuilder /></Layout>} />
       <Route path="/rewards" element={<Layout><Rewards /></Layout>} />

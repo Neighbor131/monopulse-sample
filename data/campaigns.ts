@@ -197,19 +197,13 @@ export const CAMPAIGN_TYPES: CampaignType[] = [
   },
   {
     id: 'race',
-    name: 'Races',
+    name: 'Leaderboards',
     group: 'competition',
     icon: Flag,
-    description: 'Time-boxed competitions where players climb ranks by wager or win metrics.',
-    bestFor: 'Activity spikes & prize hype',
+    description: 'Rank players by qualifying bet volume, count or net wins during a defined tournament window.',
+    bestFor: 'Time-boxed competition & activity',
     complexity: 'High',
-    steps: ['Audience', 'Scoring', 'Prize pool', 'Budget'],
-    subtypes: [
-      { id: 'sprint_race', name: 'Sprint Race', desc: 'Short, high-intensity race over hours.' },
-      { id: 'lap_race', name: 'Lap Race', desc: 'Multiple scored laps with interim winners.' },
-      { id: 'multiplier_sprint', name: 'Multiplier Sprint', desc: 'Ranked by best win multiplier, not volume.' },
-      { id: 'marathon_race', name: 'Marathon Race', desc: 'Sustained multi-day leaderboard.' },
-    ],
+    steps: ['Scoring type', 'Cadence', 'Setup', 'Filtering', 'Review'],
   },
   {
     id: 'survival',

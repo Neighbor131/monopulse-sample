@@ -20,7 +20,7 @@ type Phase = 'type' | 'subtype';
 
 const REQUIREMENTS: Record<CampaignTypeId, { title: string; items: string[]; risk: string }> = {
   mission: { title: 'Mission requirements', items: ['Task sequence and completion logic', 'Progress state and expiry behavior', 'Reward trigger per completed step'], risk: 'Avoid unclear partial-completion states.' },
-  race: { title: 'Race requirements', items: ['Scoring metric and tie breaker', 'Leaderboard visibility and update cadence', 'Prize table and settlement grace period'], risk: 'Leaderboard disputes need audit snapshots.' },
+  race: { title: 'Leaderboard requirements', items: ['Scoring type and coefficient model', 'One-time or recurring occurrence', 'Qualifying bets and ranking tie-break'], risk: 'Standings need auditable score snapshots and clear coefficient precedence.' },
   prizedrop: { title: 'Prize drop requirements', items: ['Drop trigger: time, count, event or provider signal', 'Randomness / seed evidence', 'Retry behavior for failed grants'], risk: 'Random rewards need visible fairness and audit trail.' },
   raffle: { title: 'Raffle requirements', items: ['Ticket earning rules', 'Draw schedule and winner count', 'Winner seed and compliance evidence'], risk: 'Users must understand ticket accumulation and draw state.' },
   jackpot: { title: 'Jackpot requirements', items: ['Pool contribution, seed and cap', 'Eligible brands and jurisdictions', 'Winner validation and high-value payout approval'], risk: 'Cross-brand pooled money is the highest governance surface.' },
@@ -53,7 +53,7 @@ export default function CampaignTypePicker() {
   const proceed = () => {
     if (!canProceed || !selected) return;
     setType(selected, subtype);
-    navigate('/builder/setup');
+    navigate(selected === 'race' ? '/leaderboard/type' : '/builder/setup');
   };
 
   return (
